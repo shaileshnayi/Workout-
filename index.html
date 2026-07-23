@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Workout & Muscle Volume Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        input[type=range] {
+            accent-color: #ec4899;
+        }
+    </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-4">
     <div class="max-w-md mx-auto bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl p-6 space-y-6">
@@ -29,36 +34,64 @@
             </div>
         </div>
 
-        <!-- Fully Functional Full-Song Music Player Section -->
+        <!-- Custom Full Song Music Player Section -->
         <div id="music-player-section" class="hidden bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-4 shadow-xl">
             <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                <h2 class="text-lg font-bold text-pink-400">Full Song Music Player</h2>
+                <h2 class="text-lg font-bold text-pink-400">Custom Full Song Player</h2>
                 <button onclick="toggleMusicPlayer()" class="text-gray-400 hover:text-white text-sm">✕ Close</button>
             </div>
 
-            <!-- Search Bar -->
+            <!-- Add Any Song URL Bar -->
             <div class="space-y-2">
                 <div class="flex gap-2">
-                    <input type="text" id="song-search-input" placeholder="Type any song or artist..." class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
-                    <button onclick="playSearchedSong()" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md text-xs font-medium transition whitespace-nowrap">Play Song</button>
+                    <input type="text" id="custom-song-name" placeholder="Song Name..." class="w-1/2 rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
+                    <input type="text" id="custom-mp3-input" placeholder="Direct Audio/MP3 URL..." class="w-1/2 rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
                 </div>
-                <div class="flex gap-1 overflow-x-auto pb-1 text-[10px] text-gray-400">
-                    <span class="cursor-pointer bg-gray-800 px-2 py-1 rounded hover:text-pink-400" onclick="quickPlay('Gym Workout Mix')">⚡ Gym Mix</span>
-                    <span class="cursor-pointer bg-gray-800 px-2 py-1 rounded hover:text-pink-400" onclick="quickPlay('KR$NA Rap Song')">🔥 KR$NA</span>
-                    <span class="cursor-pointer bg-gray-800 px-2 py-1 rounded hover:text-pink-400" onclick="quickPlay('Karan Aujla')">🎵 Karan Aujla</span>
-                    <span class="cursor-pointer bg-gray-800 px-2 py-1 rounded hover:text-pink-400" onclick="quickPlay('Workout Rock Music')">🎸 Rock</span>
+                <button onclick="addCustomSong()" class="w-full bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-md text-xs font-medium transition">Add Full Song to Playlist</button>
+                
+                <div class="flex gap-2 pt-1">
+                    <select id="genre-select" onchange="loadGenrePreset()" class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none">
+                        <option value="gym">⚡ Default Gym Workout Tracks</option>
+                    </select>
+                    <button onclick="switchTab('playlist')" id="tab-playlist-btn" class="bg-gray-800 border border-gray-700 hover:bg-gray-700 text-pink-300 px-3 py-2 rounded-md text-xs font-semibold whitespace-nowrap transition">❤️ Playlist (<span id="playlist-count">0</span>)</button>
                 </div>
             </div>
 
-            <!-- Active Player Screen Frame -->
-            <div class="bg-black rounded-xl overflow-hidden shadow-inner border border-gray-700/50">
-                <div id="player-screen" class="w-full h-52 flex flex-col items-center justify-center text-gray-500 text-xs bg-gray-950 p-4 text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                    </svg>
-                    Search any song above or click a preset tag to start streaming full music!
+            <!-- Player Screen Interface -->
+            <div class="bg-gradient-to-b from-gray-800 to-gray-900 p-4 rounded-xl space-y-4 border border-gray-700/50 shadow-inner">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-pink-600/20 text-pink-400 rounded-lg flex-shrink-0 flex items-center justify-center font-bold text-xl">
+                        🎵
+                    </div>
+                    <div class="overflow-hidden">
+                        <div id="track-title" class="text-sm font-bold text-white truncate">Add a song to start</div>
+                        <div id="track-artist" class="text-xs text-gray-400 truncate">Custom Player Ready</div>
+                    </div>
+                    <button id="favorite-btn" onclick="toggleFavorite()" class="ml-auto text-gray-500 hover:text-pink-500 text-xl transition">🤍</button>
+                </div>
+
+                <!-- Native Audio Engine -->
+                <audio id="audio-engine"></audio>
+
+                <!-- Scrub Bar Line -->
+                <div class="space-y-1">
+                    <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-gray-400 font-mono">
+                        <span id="current-time">0:00</span>
+                        <span id="total-duration">0:00</span>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex items-center justify-center space-x-6 pt-1">
+                    <button onclick="prevTrack()" class="text-gray-300 hover:text-white text-lg transition" title="Previous Song">⏮</button>
+                    <button id="play-pause-btn" onclick="togglePlay()" class="w-12 h-12 bg-pink-500 hover:bg-pink-600 rounded-full flex items-center justify-center text-white text-xl shadow-lg transition transform hover:scale-105">▶</button>
+                    <button onclick="nextTrack()" class="text-gray-300 hover:text-white text-lg transition" title="Next Song">⏭</button>
                 </div>
             </div>
+
+            <!-- Track List Panel -->
+            <div id="track-list" class="max-h-40 overflow-y-auto space-y-1 pr-1 text-xs"></div>
         </div>
 
         <!-- Workout Plan Modal/Section -->
@@ -164,25 +197,213 @@
 
         function toggleMusicPlayer() {
             document.getElementById('music-player-section').classList.toggle('hidden');
+            if(!document.getElementById('music-player-section').classList.contains('hidden') && playlist.length === 0) {
+                loadGenrePreset();
+            }
         }
 
-        function playSearchedSong() {
-            const query = document.getElementById('song-search-input').value.trim();
-            if(!query) return;
-            loadPlayer(query);
+        // --- Custom Standalone Audio Player Engine ---
+        const musicPresets = {
+            gym: [
+                { title: "Power Lift Anthem", artist: "Workout Track", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+                { title: "Heavy Iron Beast", artist: "Workout Track", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }
+            ]
+        };
+
+        let playlist = JSON.parse(localStorage.getItem('customPlaylist')) || musicPresets.gym;
+        let myFavorites = JSON.parse(localStorage.getItem('myFavorites')) || [];
+        let currentIndex = 0;
+        let activeTab = 'explore';
+
+        const audioEngine = document.getElementById('audio-engine');
+        const trackTitle = document.getElementById('track-title');
+        const trackArtist = document.getElementById('track-artist');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalDurationEl = document.getElementById('total-duration');
+        const trackListContainer = document.getElementById('track-list');
+        const favoriteBtn = document.getElementById('favorite-btn');
+
+        updatePlaylistCount();
+
+        function loadGenrePreset() {
+            activeTab = 'explore';
+            renderTracks();
+            if(playlist.length > 0 && !audioEngine.src) {
+                loadTrack(currentIndex, false);
+            }
         }
 
-        function quickPlay(term) {
-            document.getElementById('song-search-input').value = term;
-            loadPlayer(term);
+        function addCustomSong() {
+            const nameInput = document.getElementById('custom-song-name');
+            const urlInput = document.getElementById('custom-mp3-input');
+            const name = nameInput.value.trim();
+            const url = urlInput.value.trim();
+
+            if(!name || !url) {
+                alert('Please enter both a song name and a direct audio URL.');
+                return;
+            }
+
+            const customTrack = {
+                title: name,
+                artist: "Custom Song",
+                src: url
+            };
+
+            playlist.push(customTrack);
+            localStorage.setItem('customPlaylist', JSON.stringify(playlist));
+            
+            nameInput.value = '';
+            urlInput.value = '';
+            
+            currentIndex = playlist.length - 1;
+            renderTracks();
+            loadTrack(currentIndex, true);
         }
 
-        function loadPlayer(searchTerm) {
-            const screen = document.getElementById('player-screen');
-            // Embeds a fully functional live search player that loads full-length songs automatically
-            screen.innerHTML = `
-                <iframe width="100%" height="100%" src="https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(searchTerm)}&autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            `;
+        function switchTab(tab) {
+            activeTab = tab;
+            if(tab === 'playlist') {
+                playlist = myFavorites;
+                currentIndex = 0;
+                renderTracks();
+                if(playlist.length > 0) {
+                    loadTrack(0, false);
+                } else {
+                    trackTitle.innerText = "Playlist is Empty";
+                    trackArtist.innerText = "Click heart icon to save songs";
+                    trackListContainer.innerHTML = '<div class="text-center text-gray-500 py-3">No saved songs in playlist yet.</div>';
+                }
+            } else {
+                playlist = JSON.parse(localStorage.getItem('customPlaylist')) || musicPresets.gym;
+                currentIndex = 0;
+                renderTracks();
+                if(playlist.length > 0) loadTrack(0, false);
+            }
+        }
+
+        function renderTracks() {
+            trackListContainer.innerHTML = '';
+            playlist.forEach((track, idx) => {
+                const isCurrent = idx === currentIndex;
+                const div = document.createElement('div');
+                div.className = `p-2 rounded flex justify-between items-center cursor-pointer transition ${isCurrent ? 'bg-gray-800 border-l-2 border-pink-500 text-white' : 'hover:bg-gray-800/50 text-gray-300'}`;
+                div.innerHTML = `
+                    <div class="truncate pr-2">
+                        <div class="font-medium truncate">${track.title}</div>
+                        <div class="text-[10px] text-gray-400 truncate">${track.artist}</div>
+                    </div>
+                    <span class="text-xs text-pink-400 whitespace-nowrap">${isCurrent ? '▶ Playing' : ''}</span>
+                `;
+                div.onclick = () => {
+                    currentIndex = idx;
+                    loadTrack(currentIndex, true);
+                };
+                trackListContainer.appendChild(div);
+            });
+        }
+
+        function loadTrack(index, playNow = true) {
+            if(playlist.length === 0) return;
+            const track = playlist[index];
+            audioEngine.src = track.src;
+            trackTitle.innerText = track.title;
+            trackArtist.innerText = track.artist;
+
+            checkFavoriteStatus(track);
+            renderTracks();
+
+            if(playNow) {
+                audioEngine.play().then(() => {
+                    playPauseBtn.innerText = "⏸";
+                }).catch(e => {
+                    playPauseBtn.innerText = "▶";
+                });
+            } else {
+                playPauseBtn.innerText = "▶";
+            }
+        }
+
+        function togglePlay() {
+            if(playlist.length === 0) return;
+            if(audioEngine.paused) {
+                audioEngine.play();
+                playPauseBtn.innerText = "⏸";
+            } else {
+                audioEngine.pause();
+                playPauseBtn.innerText = "▶";
+            }
+        }
+
+        function nextTrack() {
+            if(playlist.length === 0) return;
+            currentIndex = (currentIndex + 1) % playlist.length;
+            loadTrack(currentIndex, true);
+        }
+
+        function prevTrack() {
+            if(playlist.length === 0) return;
+            currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+            loadTrack(currentIndex, true);
+        }
+
+        audioEngine.addEventListener('timeupdate', () => {
+            if(audioEngine.duration) {
+                const percent = (audioEngine.currentTime / audioEngine.duration) * 100;
+                progressBar.value = percent;
+                currentTimeEl.innerText = formatTime(audioEngine.currentTime);
+                totalDurationEl.innerText = formatTime(audioEngine.duration);
+            }
+        });
+
+        audioEngine.addEventListener('ended', nextTrack);
+
+        progressBar.addEventListener('input', () => {
+            if(audioEngine.duration) {
+                audioEngine.currentTime = (progressBar.value / 100) * audioEngine.duration;
+            }
+        });
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60);
+            const s = Math.floor(sec % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+        function toggleFavorite() {
+            if(playlist.length === 0) return;
+            const track = playlist[currentIndex];
+            const foundIdx = myFavorites.findIndex(t => t.src === track.src);
+
+            if(foundIdx >= 0) {
+                myFavorites.splice(foundIdx, 1);
+            } else {
+                myFavorites.push(track);
+            }
+
+            localStorage.setItem('myFavorites', JSON.stringify(myFavorites));
+            updatePlaylistCount();
+            checkFavoriteStatus(track);
+            if(activeTab === 'playlist') {
+                switchTab('playlist');
+            }
+        }
+
+        function checkFavoriteStatus(track) {
+            const isFav = myFavorites.some(t => t.src === track.src);
+            if(isFav) {
+                favoriteBtn.innerText = "❤️";
+                favoriteBtn.classList.add('text-pink-500');
+            } else {
+                favoriteBtn.innerText = "🤍";
+                favoriteBtn.classList.remove('text-pink-500');
+            }
+        }
+
+        function updatePlaylistCount() {
+            document.getElementById('playlist-count').innerText = myFavorites.length;
         }
 
         // --- Tracker History Logic ---
@@ -274,3 +495,4 @@
     </script>
 </body>
 </html>
+

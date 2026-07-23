@@ -34,24 +34,24 @@
             </div>
         </div>
 
-        <!-- Custom Full Song Music Player Section -->
+        <!-- Custom Built-in Full Song Music Player Section -->
         <div id="music-player-section" class="hidden bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-4 shadow-xl">
             <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                <h2 class="text-lg font-bold text-pink-400">Custom Full Song Player</h2>
+                <h2 class="text-lg font-bold text-pink-400">Custom Gym Music Player</h2>
                 <button onclick="toggleMusicPlayer()" class="text-gray-400 hover:text-white text-sm">✕ Close</button>
             </div>
 
-            <!-- Add Any Song URL Bar -->
+            <!-- Add Custom MP3 URL Bar -->
             <div class="space-y-2">
                 <div class="flex gap-2">
-                    <input type="text" id="custom-song-name" placeholder="Song Name..." class="w-1/2 rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
-                    <input type="text" id="custom-mp3-input" placeholder="Direct Audio/MP3 URL..." class="w-1/2 rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
+                    <input type="text" id="custom-mp3-input" placeholder="Paste any direct MP3 song link..." class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
+                    <button onclick="addCustomSong()" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-md text-xs font-medium transition whitespace-nowrap">Add Song</button>
                 </div>
-                <button onclick="addCustomSong()" class="w-full bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-md text-xs font-medium transition">Add Full Song to Playlist</button>
-                
-                <div class="flex gap-2 pt-1">
+                <div class="flex gap-2">
                     <select id="genre-select" onchange="loadGenrePreset()" class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none">
-                        <option value="gym">⚡ Default Gym Workout Tracks</option>
+                        <option value="gym">⚡ High Energy Workout Mix</option>
+                        <option value="rock">🎸 Rock & Metal Motivation</option>
+                        <option value="edm">🎧 EDM & Cardio Beats</option>
                     </select>
                     <button onclick="switchTab('playlist')" id="tab-playlist-btn" class="bg-gray-800 border border-gray-700 hover:bg-gray-700 text-pink-300 px-3 py-2 rounded-md text-xs font-semibold whitespace-nowrap transition">❤️ Playlist (<span id="playlist-count">0</span>)</button>
                 </div>
@@ -64,8 +64,8 @@
                         🎵
                     </div>
                     <div class="overflow-hidden">
-                        <div id="track-title" class="text-sm font-bold text-white truncate">Add a song to start</div>
-                        <div id="track-artist" class="text-xs text-gray-400 truncate">Custom Player Ready</div>
+                        <div id="track-title" class="text-sm font-bold text-white truncate">Select a track</div>
+                        <div id="track-artist" class="text-xs text-gray-400 truncate">Custom Audio Engine Ready</div>
                     </div>
                     <button id="favorite-btn" onclick="toggleFavorite()" class="ml-auto text-gray-500 hover:text-pink-500 text-xl transition">🤍</button>
                 </div>
@@ -205,12 +205,20 @@
         // --- Custom Standalone Audio Player Engine ---
         const musicPresets = {
             gym: [
-                { title: "Power Lift Anthem", artist: "Workout Track", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-                { title: "Heavy Iron Beast", artist: "Workout Track", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }
+                { title: "Power Lift Anthem", artist: "Gym Motivation", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+                { title: "Heavy Iron Beast", artist: "Workout Mix", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }
+            ],
+            rock: [
+                { title: "Adrenaline Guitar Core", artist: "Gym Rock", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+                { title: "Unstoppable Energy", artist: "Metal Vibe", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
+            ],
+            edm: [
+                { title: "Cardio Night Bass", artist: "EDM Session", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+                { title: "Speed Runner Electronic", artist: "Synthwave Beats", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" }
             ]
         };
 
-        let playlist = JSON.parse(localStorage.getItem('customPlaylist')) || musicPresets.gym;
+        let playlist = [];
         let myFavorites = JSON.parse(localStorage.getItem('myFavorites')) || [];
         let currentIndex = 0;
         let activeTab = 'explore';
@@ -229,35 +237,26 @@
 
         function loadGenrePreset() {
             activeTab = 'explore';
+            const genre = document.getElementById('genre-select').value;
+            playlist = musicPresets[genre] || musicPresets.gym;
+            currentIndex = 0;
             renderTracks();
-            if(playlist.length > 0 && !audioEngine.src) {
-                loadTrack(currentIndex, false);
-            }
+            loadTrack(currentIndex, false);
         }
 
         function addCustomSong() {
-            const nameInput = document.getElementById('custom-song-name');
-            const urlInput = document.getElementById('custom-mp3-input');
-            const name = nameInput.value.trim();
-            const url = urlInput.value.trim();
-
-            if(!name || !url) {
-                alert('Please enter both a song name and a direct audio URL.');
-                return;
-            }
+            const input = document.getElementById('custom-mp3-input');
+            const url = input.value.trim();
+            if(!url) return;
 
             const customTrack = {
-                title: name,
-                artist: "Custom Song",
+                title: "Custom Song " + (playlist.length + 1),
+                artist: "Direct MP3 Link",
                 src: url
             };
 
             playlist.push(customTrack);
-            localStorage.setItem('customPlaylist', JSON.stringify(playlist));
-            
-            nameInput.value = '';
-            urlInput.value = '';
-            
+            input.value = '';
             currentIndex = playlist.length - 1;
             renderTracks();
             loadTrack(currentIndex, true);
@@ -276,11 +275,6 @@
                     trackArtist.innerText = "Click heart icon to save songs";
                     trackListContainer.innerHTML = '<div class="text-center text-gray-500 py-3">No saved songs in playlist yet.</div>';
                 }
-            } else {
-                playlist = JSON.parse(localStorage.getItem('customPlaylist')) || musicPresets.gym;
-                currentIndex = 0;
-                renderTracks();
-                if(playlist.length > 0) loadTrack(0, false);
             }
         }
 

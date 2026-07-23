@@ -9,6 +9,11 @@
         input[type=range] {
             accent-color: #ec4899;
         }
+        /* Custom dropdown list styling for suggestions */
+        #suggestions-box {
+            scrollbar-width: thin;
+            scrollbar-color: #4b5563 #1f2937;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-4">
@@ -34,22 +39,25 @@
             </div>
         </div>
 
-        <!-- Live API Music Player Section -->
+        <!-- Live Spotify-Style Search & Music Player Section -->
         <div id="music-player-section" class="hidden bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-4 shadow-xl">
             <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                <h2 class="text-lg font-bold text-pink-400">Live API Music Stream</h2>
+                <h2 class="text-lg font-bold text-pink-400">Spotify Live Search & Play</h2>
                 <button onclick="toggleMusicPlayer()" class="text-gray-400 hover:text-white text-sm">✕ Close</button>
             </div>
 
-            <!-- Search Bar using iTunes API -->
-            <div class="space-y-2">
+            <!-- Smart Autocomplete Search Bar -->
+            <div class="relative space-y-2">
                 <div class="flex gap-2">
-                    <input type="text" id="song-search-input" placeholder="Search any song or artist (e.g., Eminem)..." class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
-                    <button onclick="searchLiveMusic()" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-md text-xs font-medium transition whitespace-nowrap">Search API</button>
+                    <input type="text" id="song-search-input" oninput="handleSearchInput(this.value)" placeholder="Type any song or artist..." class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
+                    <button onclick="searchAndPlayLiveMusic()" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-md text-xs font-medium transition whitespace-nowrap">Search</button>
                 </div>
-                <div class="flex gap-2">
+                <!-- Real-time suggestions dropdown box -->
+                <div id="suggestions-box" class="absolute left-0 right-0 z-50 bg-gray-800 border border-gray-700 rounded-md shadow-2xl max-h-48 overflow-y-auto hidden"></div>
+
+                <div class="flex gap-2 pt-1">
                     <select id="genre-select" onchange="fetchGenreAPI()" class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-sm focus:outline-none">
-                        <option value="workout workout music">⚡ Workout Mix</option>
+                        <option value="workout music">⚡ Workout Mix</option>
                         <option value="rock workout">🎸 Rock Anthem</option>
                         <option value="edm workout">🎧 EDM Energy</option>
                         <option value="hip hop gym">🔥 Hip Hop Gym</option>
@@ -58,23 +66,23 @@
                 </div>
             </div>
 
-            <!-- Player Screen -->
+            <!-- Player UI Core -->
             <div class="bg-gradient-to-b from-gray-800 to-gray-900 p-4 rounded-xl space-y-4 border border-gray-700/50 shadow-inner">
                 <div class="flex items-center space-x-3">
                     <div id="track-art-container" class="w-14 h-14 bg-gray-700 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center text-gray-500 font-bold text-xl">
                         🎵
                     </div>
                     <div class="overflow-hidden">
-                        <div id="track-title" class="text-sm font-bold text-white truncate">Search or select genre</div>
-                        <div id="track-artist" class="text-xs text-gray-400 truncate">Ready to stream via API</div>
+                        <div id="track-title" class="text-sm font-bold text-white truncate">Search any song above</div>
+                        <div id="track-artist" class="text-xs text-gray-400 truncate">Live API Audio Ready</div>
                     </div>
                     <button id="favorite-btn" onclick="toggleCurrentFavorite()" class="ml-auto text-gray-500 hover:text-pink-500 text-xl transition">🤍</button>
                 </div>
 
-                <!-- HTML5 Audio Element -->
-                <audio id="live-audio-player" class="w-full" controls crossorigin="anonymous"></audio>
+                <!-- HTML5 Audio Streamer -->
+                <audio id="live-audio-player" class="w-full" crossorigin="anonymous"></audio>
 
-                <!-- Scrub Bar -->
+                <!-- Track Line Scrub Bar -->
                 <div class="space-y-1">
                     <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer">
                     <div class="flex justify-between text-[10px] text-gray-400 font-mono">
@@ -83,7 +91,7 @@
                     </div>
                 </div>
 
-                <!-- Controls -->
+                <!-- Media Controls -->
                 <div class="flex items-center justify-center space-x-6 pt-1">
                     <button onclick="prevTrack()" class="text-gray-300 hover:text-white text-lg transition" title="Previous Song">⏮</button>
                     <button id="play-pause-btn" onclick="togglePlayPause()" class="w-12 h-12 bg-pink-500 hover:bg-pink-600 rounded-full flex items-center justify-center text-white text-xl shadow-lg transition transform hover:scale-105">▶</button>
@@ -93,7 +101,7 @@
 
             <!-- Track List Panel -->
             <div id="track-list-container" class="max-h-40 overflow-y-auto space-y-1 pr-1 text-xs">
-                <div class="text-center text-gray-500 py-3">API tracks will load here</div>
+                <div class="text-center text-gray-500 py-3">Search artist or song to start listening</div>
             </div>
         </div>
 
@@ -205,11 +213,12 @@
             }
         }
 
-        // --- Live iTunes API Music Integration ---
+        // --- Live API & Real-Time Suggestions Integration ---
         let playlist = [];
         let myFavorites = JSON.parse(localStorage.getItem('myFavorites')) || [];
         let currentTrackIndex = 0;
         let activeTab = 'explore';
+        let searchTimeout = null;
         
         const audio = document.getElementById('live-audio-player');
         const trackTitleEl = document.getElementById('track-title');
@@ -221,13 +230,74 @@
         const totalDurationEl = document.getElementById('total-duration');
         const trackListContainer = document.getElementById('track-list-container');
         const favoriteBtn = document.getElementById('favorite-btn');
+        const suggestionsBox = document.getElementById('suggestions-box');
 
         updatePlaylistCount();
+
+        // Real-time auto suggestion dropdown as user types name/artist
+        function handleSearchInput(query) {
+            clearTimeout(searchTimeout);
+            if(!query || query.trim().length < 2) {
+                suggestionsBox.classList.add('hidden');
+                suggestionsBox.innerHTML = '';
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=6`);
+                    const data = await res.json();
+                    
+                    if(data.results && data.results.length > 0) {
+                        suggestionsBox.innerHTML = '';
+                        data.results.forEach(item => {
+                            const div = document.createElement('div');
+                            div.className = "p-2 hover:bg-gray-700 cursor-pointer flex items-center space-x-2 text-xs border-b border-gray-700/50";
+                            div.innerHTML = `
+                                <img src="${item.artworkUrl100}" class="w-8 h-8 rounded object-cover">
+                                <div class="truncate">
+                                    <div class="font-bold text-white truncate">${item.trackName}</div>
+                                    <div class="text-[10px] text-gray-400 truncate">${item.artistName}</div>
+                                </div>
+                            `;
+                            div.onclick = () => {
+                                document.getElementById('song-search-input').value = item.trackName;
+                                suggestionsBox.classList.add('hidden');
+                                // Convert selected suggestion into playlist and play immediately
+                                playlist = [{
+                                    id: item.trackId,
+                                    name: item.trackName,
+                                    artist: item.artistName,
+                                    audio: item.previewUrl,
+                                    image: item.artworkUrl100
+                                }];
+                                currentTrackIndex = 0;
+                                renderTrackList();
+                                loadTrack(0, true);
+                            };
+                            suggestionsBox.appendChild(div);
+                        });
+                        suggestionsBox.classList.remove('hidden');
+                    } else {
+                        suggestionsBox.classList.add('hidden');
+                    }
+                } catch(e) {
+                    suggestionsBox.classList.add('hidden');
+                }
+            }, 300);
+        }
+
+        // Close suggestion box when clicking outside
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('#song-search-input') && !e.target.closest('#suggestions-box')) {
+                suggestionsBox.classList.add('hidden');
+            }
+        });
 
         async function fetchGenreAPI() {
             activeTab = 'explore';
             const term = document.getElementById('genre-select').value;
-            trackListContainer.innerHTML = '<div class="text-center text-gray-400 py-2">Fetching live tracks...</div>';
+            trackListContainer.innerHTML = '<div class="text-center text-gray-400 py-2">Loading songs...</div>';
 
             try {
                 const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&entity=song&limit=15`);
@@ -248,15 +318,15 @@
                     trackListContainer.innerHTML = '<div class="text-center text-gray-500 py-2">No tracks found.</div>';
                 }
             } catch (err) {
-                trackListContainer.innerHTML = '<div class="text-center text-red-400 py-2">API connection failed. Check internet.</div>';
+                trackListContainer.innerHTML = '<div class="text-center text-red-400 py-2">Network connection failed.</div>';
             }
         }
 
-        async function searchLiveMusic() {
-            activeTab = 'explore';
+        async function searchAndPlayLiveMusic() {
+            suggestionsBox.classList.add('hidden');
             const query = document.getElementById('song-search-input').value.trim();
             if(!query) return;
-            trackListContainer.innerHTML = '<div class="text-center text-gray-400 py-2">Searching live API...</div>';
+            trackListContainer.innerHTML = '<div class="text-center text-gray-400 py-2">Searching songs...</div>';
 
             try {
                 const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=15`);
@@ -277,7 +347,7 @@
                     trackListContainer.innerHTML = '<div class="text-center text-gray-500 py-2">No matching songs found.</div>';
                 }
             } catch (err) {
-                trackListContainer.innerHTML = '<div class="text-center text-red-400 py-2">Search request failed.</div>';
+                trackListContainer.innerHTML = '<div class="text-center text-red-400 py-2">Search failed.</div>';
             }
         }
 
@@ -304,11 +374,14 @@
                 const div = document.createElement('div');
                 div.className = `p-2 rounded flex justify-between items-center cursor-pointer transition ${isCurrent ? 'bg-gray-800 border-l-2 border-pink-500 text-white' : 'hover:bg-gray-800/50 text-gray-300'}`;
                 div.innerHTML = `
-                    <div class="truncate pr-2">
-                        <div class="font-medium truncate">${track.name}</div>
-                        <div class="text-[10px] text-gray-400 truncate">${track.artist}</div>
+                    <div class="flex items-center space-x-2 truncate pr-2">
+                        <img src="${track.image || ''}" class="w-7 h-7 rounded object-cover bg-gray-700 flex-shrink-0">
+                        <div class="truncate">
+                            <div class="font-medium truncate">${track.name}</div>
+                            <div class="text-[10px] text-gray-400 truncate">${track.artist}</div>
+                        </div>
                     </div>
-                    <span class="text-xs text-pink-400">${isCurrent ? '▶ Playing' : ''}</span>
+                    <span class="text-xs text-pink-400 whitespace-nowrap">${isCurrent ? '▶ Playing' : ''}</span>
                 `;
                 div.onclick = () => {
                     currentTrackIndex = idx;
@@ -338,7 +411,6 @@
                 audio.play().then(() => {
                     playPauseBtn.innerText = "⏸";
                 }).catch(e => {
-                    console.log("Autoplay blocked:", e);
                     playPauseBtn.innerText = "▶";
                 });
             } else {

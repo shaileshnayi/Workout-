@@ -6,7 +6,6 @@
     <title>Workout & Muscle Volume Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom Styling for Spotify-like Progress Bar */
         input[type=range] {
             accent-color: #ec4899;
         }
@@ -35,25 +34,24 @@
             </div>
         </div>
 
-        <!-- Hidden / Toggleable Spotify-Style Music Player Section -->
+        <!-- Spotify-Style Live Music Player Section -->
         <div id="music-player-section" class="hidden bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-4 shadow-xl">
             <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2">Spotify Workout Vibe</h2>
+                <h2 class="text-lg font-bold text-pink-400">Spotify Workout Vibe</h2>
                 <button onclick="toggleMusicPlayer()" class="text-gray-400 hover:text-white text-sm">✕ Close</button>
             </div>
 
-            <!-- Search & Filter Controls -->
+            <!-- Add Custom Track / Search Bar -->
             <div class="space-y-2">
                 <div class="flex gap-2">
-                    <input type="text" id="song-search-input" placeholder="Search track or artist..." class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-sm focus:outline-none focus:border-pink-500">
-                    <button onclick="searchTracks()" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-md text-sm font-medium transition">Search</button>
+                    <input type="text" id="custom-track-url" placeholder="Paste direct MP3 audio link..." class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
+                    <button onclick="addCustomTrack()" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-md text-xs font-medium transition whitespace-nowrap">Add URL</button>
                 </div>
                 <div class="flex gap-2">
-                    <select id="genre-select" onchange="fetchMusicTracks()" class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-sm focus:outline-none">
-                        <option value="workout">⚡ General Workout</option>
-                        <option value="rock">🎸 Gym Rock</option>
-                        <option value="electronic">🎧 EDM / Techno</option>
-                        <option value="hiphop">🔥 Hip Hop Beats</option>
+                    <select id="genre-select" onchange="loadPresetGenre()" class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-sm focus:outline-none">
+                        <option value="gym">⚡ High Energy Gym Mix</option>
+                        <option value="rock">🎸 Rock & Metal Motivation</option>
+                        <option value="edm">🎧 EDM & Cardio Beats</option>
                     </select>
                     <button onclick="switchTab('playlist')" id="tab-playlist-btn" class="bg-gray-800 border border-gray-700 hover:bg-gray-700 text-pink-300 px-3 py-2 rounded-md text-xs font-semibold whitespace-nowrap transition">❤️ My Playlist (<span id="playlist-count">0</span>)</button>
                 </div>
@@ -61,20 +59,18 @@
 
             <!-- Spotify Player Core Screen -->
             <div class="bg-gradient-to-b from-gray-800 to-gray-900 p-4 rounded-xl space-y-4 border border-gray-700/50 shadow-inner">
-                
-                <!-- Track Artwork & Identity -->
                 <div class="flex items-center space-x-3">
-                    <div id="track-art-container" class="w-14 h-14 bg-gray-700 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center text-gray-500 font-bold">
+                    <div id="track-art-container" class="w-14 h-14 bg-gray-700 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center text-gray-500 font-bold text-xl">
                         🎵
                     </div>
                     <div class="overflow-hidden">
-                        <div id="track-title" class="text-sm font-bold text-white truncate">No song loaded</div>
-                        <div id="track-artist" class="text-xs text-gray-400 truncate">Select genre or search</div>
+                        <div id="track-title" class="text-sm font-bold text-white truncate">Select a track</div>
+                        <div id="track-artist" class="text-xs text-gray-400 truncate">Workout Player Ready</div>
                     </div>
                     <button id="favorite-btn" onclick="toggleCurrentFavorite()" class="ml-auto text-gray-500 hover:text-pink-500 text-xl transition">🤍</button>
                 </div>
 
-                <!-- Spotify Style Scrub Bar / Track Line -->
+                <!-- Scrub Bar / Track Line -->
                 <div class="space-y-1">
                     <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer">
                     <div class="flex justify-between text-[10px] text-gray-400 font-mono">
@@ -83,7 +79,7 @@
                     </div>
                 </div>
 
-                <!-- Media Action Controls (Spotify Setup) -->
+                <!-- Media Controls -->
                 <div class="flex items-center justify-center space-x-6 pt-1">
                     <button onclick="prevTrack()" class="text-gray-300 hover:text-white text-lg transition" title="Previous Song">⏮</button>
                     <button id="play-pause-btn" onclick="togglePlayPause()" class="w-12 h-12 bg-pink-500 hover:bg-pink-600 rounded-full flex items-center justify-center text-white text-xl shadow-lg transition transform hover:scale-105">▶</button>
@@ -91,13 +87,13 @@
                 </div>
             </div>
 
-            <!-- Dynamic Track List Display Panel -->
+            <!-- Track List Display Panel -->
             <div id="track-list-container" class="max-h-40 overflow-y-auto space-y-1 pr-1 text-xs">
-                <div class="text-center text-gray-500 py-3">Tracks will appear here upon loading</div>
+                <!-- Populated via JS -->
             </div>
         </div>
 
-        <!-- Hidden / Toggleable Workout Plan Modal/Section -->
+        <!-- Workout Plan Modal/Section -->
         <div id="workout-plan-section" class="hidden bg-gray-700/80 border border-gray-600 rounded-lg p-4 space-y-4">
             <div class="flex justify-between items-center border-b border-gray-600 pb-2">
                 <h2 class="text-lg font-semibold text-indigo-300">Sci-Based Muscle Building Plan</h2>
@@ -105,35 +101,26 @@
             </div>
             
             <div class="space-y-3 text-sm max-h-96 overflow-y-auto pr-1">
-                <!-- Biceps & Arms -->
                 <div class="bg-gray-800 p-3 rounded-md border-l-4 border-indigo-500">
                     <div class="font-bold text-indigo-200">Biceps & Arms</div>
                     <div class="text-xs text-gray-400 mt-1">Exercises: Preacher Curls, Incline/Standing DB Curls, Straight/EZ-Bar Curls, Cable Curls</div>
                     <div class="text-xs text-gray-300 mt-1">📌 **3 Sets** | **8–12 Reps** | Moderate-heavy weight, strict form, 1-2 RIR</div>
                 </div>
-
-                <!-- Chest & Presses -->
                 <div class="bg-gray-800 p-3 rounded-md border-l-4 border-blue-500">
                     <div class="font-bold text-blue-200">Chest & Presses</div>
                     <div class="text-xs text-gray-400 mt-1">Exercises: Incline DB Press, Smith Machine Bench Press, Chest Fly Machine, Chest-Supported Rows</div>
                     <div class="text-xs text-gray-300 mt-1">📌 **3-4 Sets (Presses: 6-10 Reps)** | **3 Sets (Flyes: 10-15 Reps)** | Mechanical tension, 1-2 RIR</div>
                 </div>
-
-                <!-- Back & Lats -->
                 <div class="bg-gray-800 p-3 rounded-md border-l-4 border-emerald-500">
                     <div class="font-bold text-emerald-200">Back & Lats</div>
                     <div class="text-xs text-gray-400 mt-1">Exercises: Lat Pulldowns, Seated Row Machine, Pulldowns / Pull-ups</div>
                     <div class="text-xs text-gray-300 mt-1">📌 **3-4 Sets** | **8–12 Reps** | Full stretch & strong contraction, 1-2 RIR</div>
                 </div>
-
-                <!-- Triceps -->
                 <div class="bg-gray-800 p-3 rounded-md border-l-4 border-purple-500">
                     <div class="font-bold text-purple-200">Triceps</div>
                     <div class="text-xs text-gray-400 mt-1">Exercises: Overhead Cable Extensions, Cable Pushdowns, Skull Crushers, Single-Arm Pushdowns</div>
                     <div class="text-xs text-gray-300 mt-1">📌 **3 Sets** | **10–15 Reps** | Target lengthened position & hard squeeze, 1-2 RIR</div>
                 </div>
-
-                <!-- Shoulders (Delts) -->
                 <div class="bg-gray-800 p-3 rounded-md border-l-4 border-yellow-500">
                     <div class="font-bold text-yellow-200">Shoulders (Delts)</div>
                     <div class="text-xs text-gray-400 mt-1">Exercises: Cable Lateral Raises, Incline Smith Press, Rear Delt Cable Flyes</div>
@@ -192,14 +179,11 @@
                 <h2 class="text-xl font-semibold">Workout History</h2>
                 <button onclick="clearHistory()" class="text-xs text-red-400 hover:text-red-300">Clear History</button>
             </div>
-            <div id="history-container" class="space-y-4">
-                <!-- Grouped history logs appear here -->
-            </div>
+            <div id="history-container" class="space-y-4"></div>
         </div>
     </div>
 
     <script>
-        // Set today's date by default on load
         document.getElementById('workout-date').valueAsDate = new Date();
 
         let workouts = JSON.parse(localStorage.getItem('workouts')) || [];
@@ -213,20 +197,34 @@
         function toggleMusicPlayer() {
             document.getElementById('music-player-section').classList.toggle('hidden');
             if(!document.getElementById('music-player-section').classList.contains('hidden') && playlist.length === 0) {
-                fetchMusicTracks();
+                loadPresetGenre();
             }
         }
 
-        // --- Spotify Style Jamendo Player Logic ---
+        // --- Bulletproof Live Music Player Logic ---
+        const presets = {
+            gym: [
+                { name: "Power Workout Beats", artist: "Gym Motivation", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+                { name: "Heavy Lift Energy", artist: "Fitness Mix", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" }
+            ],
+            rock: [
+                { name: "Adrenaline Rock Anthem", artist: "Rock Workout", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+                { name: "Iron Pump Guitar", artist: "Metal Vibe", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
+            ],
+            edm: [
+                { name: "Cardio Electronic Rush", artist: "EDM Session", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+                { name: "Night Runner Bass", artist: "Synthwave Beats", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" }
+            ]
+        };
+
         let playlist = [];
         let myFavorites = JSON.parse(localStorage.getItem('myFavorites')) || [];
         let currentTrackIndex = 0;
-        let activeTab = 'explore'; // 'explore' or 'playlist'
+        let activeTab = 'explore';
         const audio = new Audio();
         
         const trackTitleEl = document.getElementById('track-title');
         const trackArtistEl = document.getElementById('track-artist');
-        const trackArtContainer = document.getElementById('track-art-container');
         const playPauseBtn = document.getElementById('play-pause-btn');
         const progressBar = document.getElementById('progress-bar');
         const currentTimeEl = document.getElementById('current-time');
@@ -236,53 +234,31 @@
 
         updatePlaylistCount();
 
-        async function fetchMusicTracks() {
+        function loadPresetGenre() {
             activeTab = 'explore';
             const genre = document.getElementById('genre-select').value;
-            trackListContainer.innerHTML = '<div class="text-center text-gray-400 py-2">Loading songs...</div>';
-            
-            const client_id = '9974bf4f'; 
-            const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${client_id}&format=jsonjson&limit=20&tags=${genre}&audioformat=mp32`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.results && data.results.length > 0) {
-                    playlist = data.results;
-                    currentTrackIndex = 0;
-                    renderTrackList();
-                    loadTrack(currentTrackIndex, false);
-                } else {
-                    trackListContainer.innerHTML = '<div class="text-center text-gray-500 py-2">No tracks found.</div>';
-                }
-            } catch (err) {
-                trackListContainer.innerHTML = '<div class="text-center text-red-400 py-2">Failed to retrieve music feed.</div>';
-            }
+            playlist = presets[genre] || presets.gym;
+            currentTrackIndex = 0;
+            renderTrackList();
+            loadTrack(currentTrackIndex, false);
         }
 
-        async function searchTracks() {
-            activeTab = 'explore';
-            const query = document.getElementById('song-search-input').value.trim();
-            if(!query) return;
-            trackListContainer.innerHTML = '<div class="text-center text-gray-400 py-2">Searching tracks...</div>';
-
-            const client_id = '9974bf4f';
-            const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${client_id}&format=jsonjson&limit=20&search=${encodeURIComponent(query)}&audioformat=mp32`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                if (data.results && data.results.length > 0) {
-                    playlist = data.results;
-                    currentTrackIndex = 0;
-                    renderTrackList();
-                    loadTrack(currentTrackIndex, false);
-                } else {
-                    trackListContainer.innerHTML = '<div class="text-center text-gray-500 py-2">No results matching your search.</div>';
-                }
-            } catch (err) {
-                trackListContainer.innerHTML = '<div class="text-center text-red-400 py-2">Search request failed.</div>';
-            }
+        function addCustomTrack() {
+            const urlInput = document.getElementById('custom-track-input') || document.getElementById('custom-track-url');
+            const url = urlInput.value.trim();
+            if(!url) return;
+            
+            const newTrack = {
+                name: "Custom Song " + (playlist.length + 1),
+                artist: "User Upload",
+                audio: url
+            };
+            
+            playlist.push(newTrack);
+            urlInput.value = '';
+            currentTrackIndex = playlist.length - 1;
+            renderTrackList();
+            loadTrack(currentTrackIndex, true);
         }
 
         function switchTab(tab) {
@@ -295,7 +271,7 @@
                     loadTrack(0, false);
                 } else {
                     trackTitleEl.innerText = "Playlist is Empty";
-                    trackArtistEl.innerText = "Add tracks using the heart icon";
+                    trackArtistEl.innerText = "Click heart icon on any song to save";
                     trackListContainer.innerHTML = '<div class="text-center text-gray-500 py-3">No saved tracks in your playlist yet.</div>';
                 }
             }
@@ -310,7 +286,7 @@
                 div.innerHTML = `
                     <div class="truncate pr-2">
                         <div class="font-medium truncate">${track.name}</div>
-                        <div class="text-[10px] text-gray-400 truncate">${track.artist_name}</div>
+                        <div class="text-[10px] text-gray-400 truncate">${track.artist}</div>
                     </div>
                     <span class="text-xs text-pink-400">${isCurrent ? '▶ Playing' : ''}</span>
                 `;
@@ -327,19 +303,13 @@
             const track = playlist[index];
             audio.src = track.audio;
             trackTitleEl.innerText = track.name;
-            trackArtistEl.innerText = track.artist_name;
+            trackArtistEl.innerText = track.artist;
             
-            if(track.image) {
-                trackArtContainer.innerHTML = `<img src="${track.image}" class="w-full h-full object-cover">`;
-            } else {
-                trackArtContainer.innerHTML = `🎵`;
-            }
-
             checkFavoriteStatus(track);
             renderTrackList();
 
             if (playNow) {
-                audio.play();
+                audio.play().catch(e => console.log("Playback error:", e));
                 playPauseBtn.innerText = "⏸";
             } else {
                 playPauseBtn.innerText = "▶";
@@ -395,7 +365,7 @@
         function toggleCurrentFavorite() {
             if(playlist.length === 0) return;
             const track = playlist[currentTrackIndex];
-            const existsIndex = myFavorites.findIndex(t => t.id === track.id);
+            const existsIndex = myFavorites.findIndex(t => t.audio === track.audio);
             
             if(existsIndex >= 0) {
                 myFavorites.splice(existsIndex, 1);
@@ -412,7 +382,7 @@
         }
 
         function checkFavoriteStatus(track) {
-            const isFav = myFavorites.some(t => t.id === track.id);
+            const isFav = myFavorites.some(t => t.audio === track.audio);
             if(isFav) {
                 favoriteBtn.innerText = "❤️";
                 favoriteBtn.classList.add('text-pink-500');

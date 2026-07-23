@@ -5,20 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Workout & Muscle Volume Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styling for Spotify-like Progress Bar */
+        input[type=range] {
+            accent-color: #ec4899;
+        }
+    </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen p-4">
     <div class="max-w-md mx-auto bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl p-6 space-y-6">
         
-        <!-- Header with Menu Icon -->
+        <!-- Header with Menu Icons -->
         <div class="flex justify-between items-center">
             <h1 class="text-2xl font-bold text-center text-indigo-400">Workout Tracker</h1>
-            <button onclick="toggleWorkoutPlan()" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-indigo-300 flex items-center space-x-1 text-sm transition" title="View Workout Plan">
-                <!-- Book/Menu Icon SVG -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-                <span class="font-medium">Plan</span>
-            </button>
+            <div class="flex space-x-2">
+                <!-- Music Player Toggle Button -->
+                <button onclick="toggleMusicPlayer()" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-pink-300 flex items-center space-x-1 text-sm transition" title="Music Player">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                </button>
+                <!-- Workout Plan Toggle Button -->
+                <button onclick="toggleWorkoutPlan()" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-indigo-300 flex items-center space-x-1 text-sm transition" title="View Workout Plan">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    <span class="font-medium">Plan</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Hidden / Toggleable Spotify-Style Music Player Section -->
+        <div id="music-player-section" class="hidden bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-4 shadow-xl">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                <h2 class="text-lg font-bold text-pink-400 flex items-center gap-2">Spotify Workout Vibe</h2>
+                <button onclick="toggleMusicPlayer()" class="text-gray-400 hover:text-white text-sm">✕ Close</button>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div class="space-y-2">
+                <div class="flex gap-2">
+                    <input type="text" id="song-search-input" placeholder="Search track or artist..." class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-sm focus:outline-none focus:border-pink-500">
+                    <button onclick="searchTracks()" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-md text-sm font-medium transition">Search</button>
+                </div>
+                <div class="flex gap-2">
+                    <select id="genre-select" onchange="fetchMusicTracks()" class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-sm focus:outline-none">
+                        <option value="workout">⚡ General Workout</option>
+                        <option value="rock">🎸 Gym Rock</option>
+                        <option value="electronic">🎧 EDM / Techno</option>
+                        <option value="hiphop">🔥 Hip Hop Beats</option>
+                    </select>
+                    <button onclick="switchTab('playlist')" id="tab-playlist-btn" class="bg-gray-800 border border-gray-700 hover:bg-gray-700 text-pink-300 px-3 py-2 rounded-md text-xs font-semibold whitespace-nowrap transition">❤️ My Playlist (<span id="playlist-count">0</span>)</button>
+                </div>
+            </div>
+
+            <!-- Spotify Player Core Screen -->
+            <div class="bg-gradient-to-b from-gray-800 to-gray-900 p-4 rounded-xl space-y-4 border border-gray-700/50 shadow-inner">
+                
+                <!-- Track Artwork & Identity -->
+                <div class="flex items-center space-x-3">
+                    <div id="track-art-container" class="w-14 h-14 bg-gray-700 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center text-gray-500 font-bold">
+                        🎵
+                    </div>
+                    <div class="overflow-hidden">
+                        <div id="track-title" class="text-sm font-bold text-white truncate">No song loaded</div>
+                        <div id="track-artist" class="text-xs text-gray-400 truncate">Select genre or search</div>
+                    </div>
+                    <button id="favorite-btn" onclick="toggleCurrentFavorite()" class="ml-auto text-gray-500 hover:text-pink-500 text-xl transition">🤍</button>
+                </div>
+
+                <!-- Spotify Style Scrub Bar / Track Line -->
+                <div class="space-y-1">
+                    <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-gray-400 font-mono">
+                        <span id="current-time">0:00</span>
+                        <span id="total-duration">0:00</span>
+                    </div>
+                </div>
+
+                <!-- Media Action Controls (Spotify Setup) -->
+                <div class="flex items-center justify-center space-x-6 pt-1">
+                    <button onclick="prevTrack()" class="text-gray-300 hover:text-white text-lg transition" title="Previous Song">⏮</button>
+                    <button id="play-pause-btn" onclick="togglePlayPause()" class="w-12 h-12 bg-pink-500 hover:bg-pink-600 rounded-full flex items-center justify-center text-white text-xl shadow-lg transition transform hover:scale-105">▶</button>
+                    <button onclick="nextTrack()" class="text-gray-300 hover:text-white text-lg transition" title="Next Song">⏭</button>
+                </div>
+            </div>
+
+            <!-- Dynamic Track List Display Panel -->
+            <div id="track-list-container" class="max-h-40 overflow-y-auto space-y-1 pr-1 text-xs">
+                <div class="text-center text-gray-500 py-3">Tracks will appear here upon loading</div>
+            </div>
         </div>
 
         <!-- Hidden / Toggleable Workout Plan Modal/Section -->
@@ -127,35 +203,249 @@
         document.getElementById('workout-date').valueAsDate = new Date();
 
         let workouts = JSON.parse(localStorage.getItem('workouts')) || [];
-
         const form = document.getElementById('workout-form');
         const historyContainer = document.getElementById('history-container');
 
         function toggleWorkoutPlan() {
-            const planSection = document.getElementById('workout-plan-section');
-            planSection.classList.toggle('hidden');
+            document.getElementById('workout-plan-section').classList.toggle('hidden');
+        }
+
+        function toggleMusicPlayer() {
+            document.getElementById('music-player-section').classList.toggle('hidden');
+            if(!document.getElementById('music-player-section').classList.contains('hidden') && playlist.length === 0) {
+                fetchMusicTracks();
+            }
+        }
+
+        // --- Spotify Style Jamendo Player Logic ---
+        let playlist = [];
+        let myFavorites = JSON.parse(localStorage.getItem('myFavorites')) || [];
+        let currentTrackIndex = 0;
+        let activeTab = 'explore'; // 'explore' or 'playlist'
+        const audio = new Audio();
+        
+        const trackTitleEl = document.getElementById('track-title');
+        const trackArtistEl = document.getElementById('track-artist');
+        const trackArtContainer = document.getElementById('track-art-container');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalDurationEl = document.getElementById('total-duration');
+        const trackListContainer = document.getElementById('track-list-container');
+        const favoriteBtn = document.getElementById('favorite-btn');
+
+        updatePlaylistCount();
+
+        async function fetchMusicTracks() {
+            activeTab = 'explore';
+            const genre = document.getElementById('genre-select').value;
+            trackListContainer.innerHTML = '<div class="text-center text-gray-400 py-2">Loading songs...</div>';
+            
+            const client_id = '9974bf4f'; 
+            const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${client_id}&format=jsonjson&limit=20&tags=${genre}&audioformat=mp32`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    playlist = data.results;
+                    currentTrackIndex = 0;
+                    renderTrackList();
+                    loadTrack(currentTrackIndex, false);
+                } else {
+                    trackListContainer.innerHTML = '<div class="text-center text-gray-500 py-2">No tracks found.</div>';
+                }
+            } catch (err) {
+                trackListContainer.innerHTML = '<div class="text-center text-red-400 py-2">Failed to retrieve music feed.</div>';
+            }
+        }
+
+        async function searchTracks() {
+            activeTab = 'explore';
+            const query = document.getElementById('song-search-input').value.trim();
+            if(!query) return;
+            trackListContainer.innerHTML = '<div class="text-center text-gray-400 py-2">Searching tracks...</div>';
+
+            const client_id = '9974bf4f';
+            const url = `https://api.jamendo.com/v3.0/tracks/?client_id=${client_id}&format=jsonjson&limit=20&search=${encodeURIComponent(query)}&audioformat=mp32`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    playlist = data.results;
+                    currentTrackIndex = 0;
+                    renderTrackList();
+                    loadTrack(currentTrackIndex, false);
+                } else {
+                    trackListContainer.innerHTML = '<div class="text-center text-gray-500 py-2">No results matching your search.</div>';
+                }
+            } catch (err) {
+                trackListContainer.innerHTML = '<div class="text-center text-red-400 py-2">Search request failed.</div>';
+            }
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            if (tab === 'playlist') {
+                playlist = myFavorites;
+                currentTrackIndex = 0;
+                renderTrackList();
+                if(playlist.length > 0) {
+                    loadTrack(0, false);
+                } else {
+                    trackTitleEl.innerText = "Playlist is Empty";
+                    trackArtistEl.innerText = "Add tracks using the heart icon";
+                    trackListContainer.innerHTML = '<div class="text-center text-gray-500 py-3">No saved tracks in your playlist yet.</div>';
+                }
+            }
+        }
+
+        function renderTrackList() {
+            trackListContainer.innerHTML = '';
+            playlist.forEach((track, idx) => {
+                const isCurrent = idx === currentTrackIndex;
+                const div = document.createElement('div');
+                div.className = `p-2 rounded flex justify-between items-center cursor-pointer transition ${isCurrent ? 'bg-gray-800 border-l-2 border-pink-500 text-white' : 'hover:bg-gray-800/50 text-gray-300'}`;
+                div.innerHTML = `
+                    <div class="truncate pr-2">
+                        <div class="font-medium truncate">${track.name}</div>
+                        <div class="text-[10px] text-gray-400 truncate">${track.artist_name}</div>
+                    </div>
+                    <span class="text-xs text-pink-400">${isCurrent ? '▶ Playing' : ''}</span>
+                `;
+                div.onclick = () => {
+                    currentTrackIndex = idx;
+                    loadTrack(currentTrackIndex, true);
+                };
+                trackListContainer.appendChild(div);
+            });
+        }
+
+        function loadTrack(index, playNow = true) {
+            if (playlist.length === 0) return;
+            const track = playlist[index];
+            audio.src = track.audio;
+            trackTitleEl.innerText = track.name;
+            trackArtistEl.innerText = track.artist_name;
+            
+            if(track.image) {
+                trackArtContainer.innerHTML = `<img src="${track.image}" class="w-full h-full object-cover">`;
+            } else {
+                trackArtContainer.innerHTML = `🎵`;
+            }
+
+            checkFavoriteStatus(track);
+            renderTrackList();
+
+            if (playNow) {
+                audio.play();
+                playPauseBtn.innerText = "⏸";
+            } else {
+                playPauseBtn.innerText = "▶";
+            }
+        }
+
+        function togglePlayPause() {
+            if(playlist.length === 0) return;
+            if (audio.paused) {
+                audio.play();
+                playPauseBtn.innerText = "⏸";
+            } else {
+                audio.pause();
+                playPauseBtn.innerText = "▶";
+            }
+        }
+
+        function nextTrack() {
+            if (playlist.length === 0) return;
+            currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+            loadTrack(currentTrackIndex, true);
+        }
+
+        function prevTrack() {
+            if (playlist.length === 0) return;
+            currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+            loadTrack(currentTrackIndex, true);
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            if(audio.duration) {
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                progressBar.value = progressPercent;
+                currentTimeEl.innerText = formatTime(audio.currentTime);
+                totalDurationEl.innerText = formatTime(audio.duration);
+            }
+        });
+
+        audio.addEventListener('ended', nextTrack);
+
+        progressBar.addEventListener('input', () => {
+            if(audio.duration) {
+                audio.currentTime = (progressBar.value / 100) * audio.duration;
+            }
+        });
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function toggleCurrentFavorite() {
+            if(playlist.length === 0) return;
+            const track = playlist[currentTrackIndex];
+            const existsIndex = myFavorites.findIndex(t => t.id === track.id);
+            
+            if(existsIndex >= 0) {
+                myFavorites.splice(existsIndex, 1);
+            } else {
+                myFavorites.push(track);
+            }
+
+            localStorage.setItem('myFavorites', JSON.stringify(myFavorites));
+            updatePlaylistCount();
+            checkFavoriteStatus(track);
+            if(activeTab === 'playlist') {
+                switchTab('playlist');
+            }
+        }
+
+        function checkFavoriteStatus(track) {
+            const isFav = myFavorites.some(t => t.id === track.id);
+            if(isFav) {
+                favoriteBtn.innerText = "❤️";
+                favoriteBtn.classList.add('text-pink-500');
+            } else {
+                favoriteBtn.innerText = "🤍";
+                favoriteBtn.classList.remove('text-pink-500');
+            }
+        }
+
+        function updatePlaylistCount() {
+            document.getElementById('playlist-count').innerText = myFavorites.length;
+        }
+
+        // --- Tracker History Logic ---
+        function saveAndRender() {
+            localStorage.setItem('workouts', JSON.stringify(workouts));
+            renderApp();
         }
 
         function renderApp() {
             historyContainer.innerHTML = '';
-
             if (workouts.length === 0) {
                 historyContainer.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">No workout history yet.</p>';
                 return;
             }
 
-            // Group workouts by date
             let groupedByDate = {};
             workouts.forEach((item, index) => {
-                if (!groupedByDate[item.date]) {
-                    groupedByDate[item.date] = [];
-                }
+                if (!groupedByDate[item.date]) groupedByDate[item.date] = [];
                 groupedByDate[item.date].push({ ...item, globalIndex: index });
             });
 
-            // Sort dates descending (newest first)
             const sortedDates = Object.keys(groupedByDate).sort().reverse();
-
             sortedDates.forEach(date => {
                 const dateGroupCard = document.createElement('div');
                 dateGroupCard.className = "bg-gray-700 p-4 rounded-lg space-y-3";
@@ -185,16 +475,12 @@
                         ${exercisesHTML}
                     </div>
                 `;
-
                 historyContainer.appendChild(dateGroupCard);
             });
-
-            localStorage.setItem('workouts', JSON.stringify(workouts));
         }
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-
             const newWorkout = {
                 date: document.getElementById('workout-date').value,
                 muscle: document.getElementById('muscle-group').value,
@@ -203,11 +489,9 @@
                 sets: document.getElementById('sets').value,
                 reps: document.getElementById('reps').value
             };
-
             workouts.push(newWorkout);
-            renderApp();
+            saveAndRender();
             
-            // Keep the selected date and reset form fields back to default values
             const currentDate = document.getElementById('workout-date').value;
             form.reset();
             document.getElementById('workout-date').value = currentDate;
@@ -217,13 +501,13 @@
 
         function deleteWorkout(index) {
             workouts.splice(index, 1);
-            renderApp();
+            saveAndRender();
         }
 
         function clearHistory() {
             if(confirm('Are you sure you want to clear all workout history?')) {
                 workouts = [];
-                renderApp();
+                saveAndRender();
             }
         }
 
@@ -231,4 +515,3 @@
     </script>
 </body>
 </html>
-

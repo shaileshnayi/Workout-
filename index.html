@@ -13,12 +13,12 @@
         <div class="flex justify-between items-center">
             <h1 class="text-2xl font-bold text-center text-indigo-400">Workout Tracker</h1>
             <div class="flex space-x-2">
-                <!-- Music Player Toggle Button -->
-                <button onclick="toggleMusicPlayer()" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-green-400 flex items-center space-x-1 text-sm transition" title="Spotify Hub">
+                <!-- Direct Spotify Link Button -->
+                <a href="https://open.spotify.com" target="_blank" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-green-400 flex items-center space-x-1 text-sm transition" title="Open Spotify Web Player">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                     </svg>
-                </button>
+                </a>
                 <!-- Workout Plan Toggle Button -->
                 <button onclick="toggleWorkoutPlan()" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-indigo-300 flex items-center space-x-1 text-sm transition" title="View Workout Plan">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -29,23 +29,7 @@
             </div>
         </div>
 
-        <!-- Spotify Hub Section -->
-        <div id="music-player-section" class="hidden bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-4 shadow-xl">
-            <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                <h2 class="text-lg font-bold text-green-400">Spotify Hub</h2>
-                <button onclick="toggleMusicPlayer()" class="text-gray-400 hover:text-white text-sm">✕ Close</button>
-            </div>
-
-            <!-- Direct Launch Button for Full Spotify App -->
-            <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 text-center space-y-3">
-                <p class="text-xs text-gray-300">Tap below to open your full Spotify account, browse libraries, search songs, and play anything:</p>
-                <a href="https://open.spotify.com" target="_blank" class="inline-block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg text-sm transition shadow-lg">
-                    🟢 Open Full Spotify Account & Search
-                </a>
-            </div>
-        </div>
-
-        <!-- Workout Plan Modal/Section -->
+        <!-- Workout Plan Modal/Section with Vector Icons -->
         <div id="workout-plan-section" class="hidden bg-gray-700/80 border border-gray-600 rounded-lg p-4 space-y-4">
             <div class="flex justify-between items-center border-b border-gray-600 pb-2">
                 <h2 class="text-lg font-semibold text-indigo-300">Sci-Based Muscle Building Plan</h2>
@@ -53,30 +37,64 @@
             </div>
             
             <div class="space-y-3 text-sm max-h-96 overflow-y-auto pr-1">
-                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-indigo-500">
-                    <div class="font-bold text-indigo-200">Biceps & Arms</div>
-                    <div class="text-xs text-gray-400 mt-1">Exercises: Preacher Curls, Incline/Standing DB Curls, Straight/EZ-Bar Curls, Cable Curls</div>
-                    <div class="text-xs text-gray-300 mt-1">📌 **3 Sets** | **8–12 Reps** | Moderate-heavy weight, strict form, 1-2 RIR</div>
+                <!-- Biceps & Arms -->
+                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-indigo-500 flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-indigo-900/50 rounded-lg flex items-center justify-center flex-shrink-0 text-indigo-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h10a4 4 0 004-4M7 9l5-5 5 5M12 4v12" /></svg>
+                    </div>
+                    <div>
+                        <div class="font-bold text-indigo-200">Biceps & Arms</div>
+                        <div class="text-xs text-gray-400 mt-0.5">Preacher Curls, Incline/Standing DB Curls, Straight/EZ-Bar Curls, Cable Curls</div>
+                        <div class="text-xs text-gray-300 mt-1">📌 **3 Sets** | **8–12 Reps** | 1-2 RIR</div>
+                    </div>
                 </div>
-                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-blue-500">
-                    <div class="font-bold text-blue-200">Chest & Presses</div>
-                    <div class="text-xs text-gray-400 mt-1">Exercises: Incline DB Press, Smith Machine Bench Press, Chest Fly Machine, Chest-Supported Rows</div>
-                    <div class="text-xs text-gray-300 mt-1">📌 **3-4 Sets (Presses: 6-10 Reps)** | **3 Sets (Flyes: 10-15 Reps)** | Mechanical tension, 1-2 RIR</div>
+
+                <!-- Chest & Presses -->
+                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-blue-500 flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-blue-900/50 rounded-lg flex items-center justify-center flex-shrink-0 text-blue-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                    </div>
+                    <div>
+                        <div class="font-bold text-blue-200">Chest & Presses</div>
+                        <div class="text-xs text-gray-400 mt-0.5">Incline DB Press, Smith Machine Bench Press, Chest Fly Machine, Chest-Supported Rows</div>
+                        <div class="text-xs text-gray-300 mt-1">📌 **3-4 Sets** | **Presses: 6-10 Reps** | **Flyes: 10-15 Reps**</div>
+                    </div>
                 </div>
-                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-emerald-500">
-                    <div class="font-bold text-emerald-200">Back & Lats</div>
-                    <div class="text-xs text-gray-400 mt-1">Exercises: Lat Pulldowns, Seated Row Machine, Pulldowns / Pull-ups</div>
-                    <div class="text-xs text-gray-300 mt-1">📌 **3-4 Sets** | **8–12 Reps** | Full stretch & strong contraction, 1-2 RIR</div>
+
+                <!-- Back & Lats -->
+                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-emerald-500 flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-emerald-900/50 rounded-lg flex items-center justify-center flex-shrink-0 text-emerald-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+                    </div>
+                    <div>
+                        <div class="font-bold text-emerald-200">Back & Lats</div>
+                        <div class="text-xs text-gray-400 mt-0.5">Lat Pulldowns, Seated Row Machine, Pulldowns / Pull-ups</div>
+                        <div class="text-xs text-gray-300 mt-1">📌 **3-4 Sets** | **8–12 Reps** | Full stretch & strong contraction</div>
+                    </div>
                 </div>
-                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-purple-500">
-                    <div class="font-bold text-purple-200">Triceps</div>
-                    <div class="text-xs text-gray-400 mt-1">Exercises: Overhead Cable Extensions, Cable Pushdowns, Skull Crushers, Single-Arm Pushdowns</div>
-                    <div class="text-xs text-gray-300 mt-1">📌 **3 Sets** | **10–15 Reps** | Target lengthened position & hard squeeze, 1-2 RIR</div>
+
+                <!-- Triceps -->
+                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-purple-500 flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-purple-900/50 rounded-lg flex items-center justify-center flex-shrink-0 text-purple-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </div>
+                    <div>
+                        <div class="font-bold text-purple-200">Triceps</div>
+                        <div class="text-xs text-gray-400 mt-0.5">Overhead Cable Extensions, Cable Pushdowns, Skull Crushers, Single-Arm Pushdowns</div>
+                        <div class="text-xs text-gray-300 mt-1">📌 **3 Sets** | **10–15 Reps** | Target lengthened position</div>
+                    </div>
                 </div>
-                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-yellow-500">
-                    <div class="font-bold text-yellow-200">Shoulders (Delts)</div>
-                    <div class="text-xs text-gray-400 mt-1">Exercises: Cable Lateral Raises, Incline Smith Press, Rear Delt Cable Flyes</div>
-                    <div class="text-xs text-gray-300 mt-1">📌 **3-4 Sets** | **10–20 Reps** | Light-to-moderate weight, strict form, constant tension</div>
+
+                <!-- Shoulders (Delts) -->
+                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-yellow-500 flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-yellow-900/50 rounded-lg flex items-center justify-center flex-shrink-0 text-yellow-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" /></svg>
+                    </div>
+                    <div>
+                        <div class="font-bold text-yellow-200">Shoulders (Delts)</div>
+                        <div class="text-xs text-gray-400 mt-0.5">Cable Lateral Raises, Incline Smith Press, Rear Delt Cable Flyes</div>
+                        <div class="text-xs text-gray-300 mt-1">📌 **3-4 Sets** | **10–20 Reps** | Strict form, constant tension</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -144,10 +162,6 @@
 
         function toggleWorkoutPlan() {
             document.getElementById('workout-plan-section').classList.toggle('hidden');
-        }
-
-        function toggleMusicPlayer() {
-            document.getElementById('music-player-section').classList.toggle('hidden');
         }
 
         // --- Tracker History Logic ---
@@ -239,3 +253,4 @@
     </script>
 </body>
 </html>
+

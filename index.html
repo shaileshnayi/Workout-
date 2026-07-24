@@ -29,19 +29,27 @@
             </div>
         </div>
 
-        <!-- Spotify Web Player Section -->
+        <!-- Spotify Integration Section -->
         <div id="music-player-section" class="hidden bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-4 shadow-xl">
             <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                <h2 class="text-lg font-bold text-green-400">Spotify Account Player</h2>
+                <h2 class="text-lg font-bold text-green-400">Spotify Hub</h2>
                 <button onclick="toggleMusicPlayer()" class="text-gray-400 hover:text-white text-sm">✕ Close</button>
             </div>
 
-            <!-- Embedded Spotify Web Player View (Handles Account Login & Full Access) -->
-            <div class="space-y-3">
-                <div id="spotify-iframe-wrapper" class="w-full rounded-xl overflow-hidden bg-gray-950 border border-gray-800 shadow-inner">
-                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX76Wlfdnj7AP?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <!-- Direct Launch Button for Full Spotify Web App (Matches your 1st Screenshot experience) -->
+            <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 text-center space-y-3">
+                <p class="text-xs text-gray-300">Open your full Spotify account dashboard, search feeds, and libraries instantly:</p>
+                <a href="https://open.spotify.com" target="_blank" class="inline-block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded-lg text-sm transition shadow-lg">
+                    🟢 Open Full Spotify Web App
+                </a>
+            </div>
+
+            <!-- Compact Embedded Player for Quick Tracks -->
+            <div class="space-y-2">
+                <p class="text-[11px] text-gray-400 font-medium">Quick Workout Player Widget:</p>
+                <div class="w-full rounded-xl overflow-hidden bg-gray-950 border border-gray-800">
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX76Wlfdnj7AP?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                 </div>
-                <p class="text-[11px] text-gray-400 text-center">Log in via the widget above to access your personal Spotify account, playlists, and full song library.</p>
             </div>
         </div>
 

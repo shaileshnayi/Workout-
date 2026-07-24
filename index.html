@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workout & Muscle Volume Tracker</title>
+    <title>Workout & Muscle Volume Tracker with Spotify</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         input[type=range] {
@@ -34,64 +34,79 @@
             </div>
         </div>
 
-        <!-- Custom Built-in Full Song Music Player Section -->
+        <!-- Music Player Section (Includes Custom Engine & Spotify Web Embed) -->
         <div id="music-player-section" class="hidden bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-4 shadow-xl">
             <div class="flex justify-between items-center border-b border-gray-800 pb-2">
-                <h2 class="text-lg font-bold text-pink-400">Custom Gym Music Player</h2>
+                <h2 class="text-lg font-bold text-pink-400">Gym Music Player</h2>
                 <button onclick="toggleMusicPlayer()" class="text-gray-400 hover:text-white text-sm">✕ Close</button>
             </div>
 
-            <!-- Add Custom MP3 URL Bar -->
-            <div class="space-y-2">
-                <div class="flex gap-2">
-                    <input type="text" id="custom-mp3-input" placeholder="Paste any direct MP3 song link..." class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
-                    <button onclick="addCustomSong()" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-md text-xs font-medium transition whitespace-nowrap">Add Song</button>
-                </div>
-                <div class="flex gap-2">
-                    <select id="genre-select" onchange="loadGenrePreset()" class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none">
-                        <option value="gym">⚡ High Energy Workout Mix</option>
-                        <option value="rock">🎸 Rock & Metal Motivation</option>
-                        <option value="edm">🎧 EDM & Cardio Beats</option>
-                    </select>
-                    <button onclick="switchTab('playlist')" id="tab-playlist-btn" class="bg-gray-800 border border-gray-700 hover:bg-gray-700 text-pink-300 px-3 py-2 rounded-md text-xs font-semibold whitespace-nowrap transition">❤️ Playlist (<span id="playlist-count">0</span>)</button>
-                </div>
+            <!-- Player Mode Tabs -->
+            <div class="flex gap-2">
+                <button onclick="switchPlayerMode('custom')" id="mode-custom-btn" class="flex-1 bg-pink-600 text-white py-1.5 rounded-md text-xs font-semibold transition">Built-in MP3 Player</button>
+                <button onclick="switchPlayerMode('spotify')" id="mode-spotify-btn" class="flex-1 bg-gray-800 border border-gray-700 text-gray-300 py-1.5 rounded-md text-xs font-semibold transition">Spotify Web Player</button>
             </div>
 
-            <!-- Player Screen Interface -->
-            <div class="bg-gradient-to-b from-gray-800 to-gray-900 p-4 rounded-xl space-y-4 border border-gray-700/50 shadow-inner">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-pink-600/20 text-pink-400 rounded-lg flex-shrink-0 flex items-center justify-center font-bold text-xl">
-                        🎵
-                    </div>
-                    <div class="overflow-hidden">
-                        <div id="track-title" class="text-sm font-bold text-white truncate">Select a track</div>
-                        <div id="track-artist" class="text-xs text-gray-400 truncate">Custom Audio Engine Ready</div>
-                    </div>
-                    <button id="favorite-btn" onclick="toggleFavorite()" class="ml-auto text-gray-500 hover:text-pink-500 text-xl transition">🤍</button>
+            <!-- SPOTIFY WEB PLAYER VIEW -->
+            <div id="spotify-container" class="hidden space-y-3">
+                <div class="flex gap-2">
+                    <input type="text" id="spotify-url-input" placeholder="Paste Spotify Track/Playlist Link..." class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-green-500">
+                    <button onclick="loadSpotifyEmbed()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-md text-xs font-medium transition whitespace-nowrap">Load</button>
                 </div>
-
-                <!-- Native Audio Engine -->
-                <audio id="audio-engine"></audio>
-
-                <!-- Scrub Bar Line -->
-                <div class="space-y-1">
-                    <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer">
-                    <div class="flex justify-between text-[10px] text-gray-400 font-mono">
-                        <span id="current-time">0:00</span>
-                        <span id="total-duration">0:00</span>
-                    </div>
+                <!-- Embedded iFrame Player Container -->
+                <div id="spotify-iframe-wrapper" class="w-full rounded-xl overflow-hidden bg-gray-950 border border-gray-800">
+                    <iframe id="spotify-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX76Wlfdnj7AP?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                 </div>
-
-                <!-- Controls -->
-                <div class="flex items-center justify-center space-x-6 pt-1">
-                    <button onclick="prevTrack()" class="text-gray-300 hover:text-white text-lg transition" title="Previous Song">⏮</button>
-                    <button id="play-pause-btn" onclick="togglePlay()" class="w-12 h-12 bg-pink-500 hover:bg-pink-600 rounded-full flex items-center justify-center text-white text-xl shadow-lg transition transform hover:scale-105">▶</button>
-                    <button onclick="nextTrack()" class="text-gray-300 hover:text-white text-lg transition" title="Next Song">⏭</button>
-                </div>
+                <p class="text-[10px] text-gray-400 text-center">Log in via the player widget to sync your full Spotify Premium account library.</p>
             </div>
 
-            <!-- Track List Panel -->
-            <div id="track-list" class="max-h-40 overflow-y-auto space-y-1 pr-1 text-xs"></div>
+            <!-- CUSTOM MP3 PLAYER VIEW -->
+            <div id="custom-container" class="space-y-4">
+                <div class="space-y-2">
+                    <div class="flex gap-2">
+                        <input type="text" id="custom-mp3-input" placeholder="Paste any direct MP3 song link..." class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none focus:border-pink-500">
+                        <button onclick="addCustomSong()" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-2 rounded-md text-xs font-medium transition whitespace-nowrap">Add Song</button>
+                    </div>
+                    <div class="flex gap-2">
+                        <select id="genre-select" onchange="loadGenrePreset()" class="w-full rounded-md bg-gray-800 border-gray-700 text-white p-2 text-xs focus:outline-none">
+                            <option value="gym">⚡ High Energy Workout Mix</option>
+                            <option value="rock">🎸 Rock & Metal Motivation</option>
+                            <option value="edm">🎧 EDM & Cardio Beats</option>
+                        </select>
+                        <button onclick="switchTab('playlist')" class="bg-gray-800 border border-gray-700 hover:bg-gray-700 text-pink-300 px-3 py-2 rounded-md text-xs font-semibold whitespace-nowrap transition">❤️ Playlist (<span id="playlist-count">0</span>)</button>
+                    </div>
+                </div>
+
+                <!-- Player Screen Interface -->
+                <div class="bg-gradient-to-b from-gray-800 to-gray-900 p-4 rounded-xl space-y-4 border border-gray-700/50 shadow-inner">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-pink-600/20 text-pink-400 rounded-lg flex-shrink-0 flex items-center justify-center font-bold text-xl">🎵</div>
+                        <div class="overflow-hidden">
+                            <div id="track-title" class="text-sm font-bold text-white truncate">Select a track</div>
+                            <div id="track-artist" class="text-xs text-gray-400 truncate">Custom Audio Engine Ready</div>
+                        </div>
+                        <button id="favorite-btn" onclick="toggleFavorite()" class="ml-auto text-gray-500 hover:text-pink-500 text-xl transition">🤍</button>
+                    </div>
+
+                    <audio id="audio-engine"></audio>
+
+                    <div class="space-y-1">
+                        <input type="range" id="progress-bar" value="0" max="100" class="w-full h-1.5 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-[10px] text-gray-400 font-mono">
+                            <span id="current-time">0:00</span>
+                            <span id="total-duration">0:00</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center space-x-6 pt-1">
+                        <button onclick="prevTrack()" class="text-gray-300 hover:text-white text-lg transition" title="Previous Song">⏮</button>
+                        <button id="play-pause-btn" onclick="togglePlay()" class="w-12 h-12 bg-pink-500 hover:bg-pink-600 rounded-full flex items-center justify-center text-white text-xl shadow-lg transition transform hover:scale-105">▶</button>
+                        <button onclick="nextTrack()" class="text-gray-300 hover:text-white text-lg transition" title="Next Song">⏭</button>
+                    </div>
+                </div>
+
+                <div id="track-list" class="max-h-32 overflow-y-auto space-y-1 pr-1 text-xs"></div>
+            </div>
         </div>
 
         <!-- Workout Plan Modal/Section -->
@@ -200,6 +215,44 @@
             if(!document.getElementById('music-player-section').classList.contains('hidden') && playlist.length === 0) {
                 loadGenrePreset();
             }
+        }
+
+        // --- Player Mode Switcher (Custom vs Spotify Web Player) ---
+        function switchPlayerMode(mode) {
+            const customBtn = document.getElementById('mode-custom-btn');
+            const spotifyBtn = document.getElementById('mode-spotify-btn');
+            const customContainer = document.getElementById('custom-container');
+            const spotifyContainer = document.getElementById('spotify-container');
+
+            if(mode === 'spotify') {
+                spotifyBtn.className = "flex-1 bg-green-600 text-white py-1.5 rounded-md text-xs font-semibold transition";
+                customBtn.className = "flex-1 bg-gray-800 border border-gray-700 text-gray-300 py-1.5 rounded-md text-xs font-semibold transition";
+                spotifyContainer.classList.remove('hidden');
+                customContainer.classList.add('hidden');
+                if(!audioEngine.paused) audioEngine.pause(); // Pause custom player if running
+            } else {
+                customBtn.className = "flex-1 bg-pink-600 text-white py-1.5 rounded-md text-xs font-semibold transition";
+                spotifyBtn.className = "flex-1 bg-gray-800 border border-gray-700 text-gray-300 py-1.5 rounded-md text-xs font-semibold transition";
+                customContainer.classList.remove('hidden');
+                spotifyContainer.classList.add('hidden');
+            }
+        }
+
+        function loadSpotifyEmbed() {
+            const inputVal = document.getElementById('spotify-url-input').value.trim();
+            if(!inputVal) return;
+
+            let embedUrl = inputVal;
+            // Parse track/playlist URL format to convert into embed iframe source format if user pasted standard web share link
+            if(inputVal.includes('open.spotify.com')) {
+                embedUrl = inputVal.replace('spotify.com/', 'spotify.com/embed/');
+                // Strip unnecessary query parameters if any exist
+                if(embedUrl.includes('?')) embedUrl = embedUrl.split('?')[0];
+                embedUrl += '?utm_source=generator&theme=0';
+            }
+
+            document.getElementById('spotify-iframe').src = embedUrl;
+            document.getElementById('spotify-url-input').value = '';
         }
 
         // --- Custom Standalone Audio Player Engine ---
@@ -380,9 +433,6 @@
             localStorage.setItem('myFavorites', JSON.stringify(myFavorites));
             updatePlaylistCount();
             checkFavoriteStatus(track);
-            if(activeTab === 'playlist') {
-                switchTab('playlist');
-            }
         }
 
         function checkFavoriteStatus(track) {

@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <!-- Workout Plan Modal/Section (Clean Text Only) -->
+        <!-- Workout Plan Modal/Section -->
         <div id="workout-plan-section" class="hidden bg-gray-700/80 border border-gray-600 rounded-lg p-4 space-y-4">
             <div class="flex justify-between items-center border-b border-gray-600 pb-2">
                 <h2 class="text-lg font-semibold text-indigo-300">Sci-Based Muscle Building Plan</h2>
@@ -37,30 +37,67 @@
             </div>
             
             <div class="space-y-3 text-sm max-h-96 overflow-y-auto pr-1">
+                <!-- Arms / Biceps -->
                 <div class="bg-gray-800 p-3 rounded-md border-l-4 border-indigo-500">
                     <div class="font-bold text-indigo-200">Biceps & Arms</div>
-                    <div class="text-xs text-gray-400 mt-1">Exercises: Preacher Curls, Incline/Standing DB Curls, Straight/EZ-Bar Curls, Cable Curls</div>
-                    <div class="text-xs text-gray-300 mt-1">📌 3 Sets | 8–12 Reps | 1-2 RIR</div>
+                    <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-1.5">
+                        <span class="text-gray-300">Exercises:</span>
+                        <button type="button" onclick="selectExercise('Arms', 'Preacher Curls')" class="bg-gray-700 hover:bg-indigo-600 text-indigo-200 px-1.5 py-0.5 rounded transition">Preacher Curls</button>,
+                        <button type="button" onclick="selectExercise('Arms', 'Incline DB Curls')" class="bg-gray-700 hover:bg-indigo-600 text-indigo-200 px-1.5 py-0.5 rounded transition">Incline DB Curls</button>,
+                        <button type="button" onclick="selectExercise('Arms', 'Standing DB Curls')" class="bg-gray-700 hover:bg-indigo-600 text-indigo-200 px-1.5 py-0.5 rounded transition">Standing DB Curls</button>,
+                        <button type="button" onclick="selectExercise('Arms', 'EZ-Bar Curls')" class="bg-gray-700 hover:bg-indigo-600 text-indigo-200 px-1.5 py-0.5 rounded transition">EZ-Bar Curls</button>,
+                        <button type="button" onclick="selectExercise('Arms', 'Cable Curls')" class="bg-gray-700 hover:bg-indigo-600 text-indigo-200 px-1.5 py-0.5 rounded transition">Cable Curls</button>
+                    </div>
+                    <div class="text-xs text-gray-300 mt-2">📌 3 Sets | 8–12 Reps | 1-2 RIR</div>
                 </div>
+
+                <!-- Chest & Presses -->
                 <div class="bg-gray-800 p-3 rounded-md border-l-4 border-blue-500">
                     <div class="font-bold text-blue-200">Chest & Presses</div>
-                    <div class="text-xs text-gray-400 mt-1">Exercises: Incline DB Press, Smith Machine Bench Press, Chest Fly Machine, Chest-Supported Rows</div>
-                    <div class="text-xs text-gray-300 mt-1">📌 3-4 Sets | Presses: 6-10 Reps | Flyes: 10-15 Reps</div>
+                    <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-1.5">
+                        <span class="text-gray-300">Exercises:</span>
+                        <button type="button" onclick="selectExercise('Chest', 'Incline DB Press')" class="bg-gray-700 hover:bg-blue-600 text-blue-200 px-1.5 py-0.5 rounded transition">Incline DB Press</button>,
+                        <button type="button" onclick="selectExercise('Chest', 'Smith Machine Bench Press')" class="bg-gray-700 hover:bg-blue-600 text-blue-200 px-1.5 py-0.5 rounded transition">Smith Machine Bench Press</button>,
+                        <button type="button" onclick="selectExercise('Chest', 'Chest Fly Machine')" class="bg-gray-700 hover:bg-blue-600 text-blue-200 px-1.5 py-0.5 rounded transition">Chest Fly Machine</button>,
+                        <button type="button" onclick="selectExercise('Back', 'Chest-Supported Rows')" class="bg-gray-700 hover:bg-blue-600 text-blue-200 px-1.5 py-0.5 rounded transition">Chest-Supported Rows</button>
+                    </div>
+                    <div class="text-xs text-gray-300 mt-2">📌 3-4 Sets | Presses: 6-10 Reps | Flyes: 10-15 Reps</div>
                 </div>
+
+                <!-- Back & Lats -->
                 <div class="bg-gray-800 p-3 rounded-md border-l-4 border-emerald-500">
                     <div class="font-bold text-emerald-200">Back & Lats</div>
-                    <div class="text-xs text-gray-400 mt-1">Exercises: Lat Pulldowns, Seated Row Machine, Pulldowns / Pull-ups</div>
-                    <div class="text-xs text-gray-300 mt-1">📌 3-4 Sets | 8–12 Reps | Full stretch & strong contraction</div>
+                    <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-1.5">
+                        <span class="text-gray-300">Exercises:</span>
+                        <button type="button" onclick="selectExercise('Back', 'Lat Pulldowns')" class="bg-gray-700 hover:bg-emerald-600 text-emerald-200 px-1.5 py-0.5 rounded transition">Lat Pulldowns</button>,
+                        <button type="button" onclick="selectExercise('Back', 'Seated Row Machine')" class="bg-gray-700 hover:bg-emerald-600 text-emerald-200 px-1.5 py-0.5 rounded transition">Seated Row Machine</button>,
+                        <button type="button" onclick="selectExercise('Back', 'Pull-ups')" class="bg-gray-700 hover:bg-emerald-600 text-emerald-200 px-1.5 py-0.5 rounded transition">Pull-ups</button>
+                    </div>
+                    <div class="text-xs text-gray-300 mt-2">📌 3-4 Sets | 8–12 Reps | Full stretch & strong contraction</div>
                 </div>
+
+                <!-- Triceps -->
                 <div class="bg-gray-800 p-3 rounded-md border-l-4 border-purple-500">
                     <div class="font-bold text-purple-200">Triceps</div>
-                    <div class="text-xs text-gray-400 mt-1">Exercises: Overhead Cable Extensions, Cable Pushdowns, Skull Crushers, Single-Arm Pushdowns</div>
-                    <div class="text-xs text-gray-300 mt-1">📌 3 Sets | 10–15 Reps | Target lengthened position</div>
+                    <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-1.5">
+                        <span class="text-gray-300">Exercises:</span>
+                        <button type="button" onclick="selectExercise('Arms', 'Overhead Cable Extensions')" class="bg-gray-700 hover:bg-purple-600 text-purple-200 px-1.5 py-0.5 rounded transition">Overhead Cable Extensions</button>,
+                        <button type="button" onclick="selectExercise('Arms', 'Cable Pushdowns')" class="bg-gray-700 hover:bg-purple-600 text-purple-200 px-1.5 py-0.5 rounded transition">Cable Pushdowns</button>,
+                        <button type="button" onclick="selectExercise('Arms', 'Skull Crushers')" class="bg-gray-700 hover:bg-purple-600 text-purple-200 px-1.5 py-0.5 rounded transition">Skull Crushers</button>
+                    </div>
+                    <div class="text-xs text-gray-300 mt-2">📌 3 Sets | 10–15 Reps | Target lengthened position</div>
                 </div>
+
+                <!-- Shoulders -->
                 <div class="bg-gray-800 p-3 rounded-md border-l-4 border-yellow-500">
                     <div class="font-bold text-yellow-200">Shoulders (Delts)</div>
-                    <div class="text-xs text-gray-400 mt-1">Exercises: Cable Lateral Raises, Incline Smith Press, Rear Delt Cable Flyes</div>
-                    <div class="text-xs text-gray-300 mt-1">📌 3-4 Sets | 10–20 Reps | Strict form, constant tension</div>
+                    <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-1.5">
+                        <span class="text-gray-300">Exercises:</span>
+                        <button type="button" onclick="selectExercise('Shoulders', 'Cable Lateral Raises')" class="bg-gray-700 hover:bg-yellow-600 text-yellow-200 px-1.5 py-0.5 rounded transition">Cable Lateral Raises</button>,
+                        <button type="button" onclick="selectExercise('Shoulders', 'Incline Smith Press')" class="bg-gray-700 hover:bg-yellow-600 text-yellow-200 px-1.5 py-0.5 rounded transition">Incline Smith Press</button>,
+                        <button type="button" onclick="selectExercise('Shoulders', 'Rear Delt Cable Flyes')" class="bg-gray-700 hover:bg-yellow-600 text-yellow-200 px-1.5 py-0.5 rounded transition">Rear Delt Cable Flyes</button>
+                    </div>
+                    <div class="text-xs text-gray-300 mt-2">📌 3-4 Sets | 10–20 Reps | Strict form, constant tension</div>
                 </div>
             </div>
         </div>
@@ -85,7 +122,10 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium">Exercise Name</label>
+                <div class="flex justify-between items-center">
+                    <label class="block text-sm font-medium">Exercise Name</label>
+                    <button type="button" onclick="clearExerciseInput()" class="text-xs text-gray-400 hover:text-red-400 transition">Clear Input</button>
+                </div>
                 <input type="text" id="exercise-name" placeholder="e.g., Preacher Curls" required class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2">
             </div>
 
@@ -128,6 +168,18 @@
 
         function toggleWorkoutPlan() {
             document.getElementById('workout-plan-section').classList.toggle('hidden');
+        }
+
+        // --- Exercise selection helper from Plan ---
+        function selectExercise(muscleGroup, exerciseName) {
+            document.getElementById('muscle-group').value = muscleGroup;
+            document.getElementById('exercise-name').value = exerciseName;
+            document.getElementById('workout-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- Clear Exercise Input Helper ---
+        function clearExerciseInput() {
+            document.getElementById('exercise-name').value = '';
         }
 
         // --- Tracker History Logic ---

@@ -14,7 +14,7 @@
             <h1 class="text-2xl font-bold text-center text-indigo-400">Workout Tracker</h1>
             <div class="flex space-x-2">
                 <!-- Music Player Toggle Button -->
-                <button onclick="toggleMusicPlayer()" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-green-400 flex items-center space-x-1 text-sm transition" title="Spotify Player">
+                <button onclick="toggleMusicPlayer()" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-green-400 flex items-center space-x-1 text-sm transition" title="Spotify Hub">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                     </svg>
@@ -29,27 +29,19 @@
             </div>
         </div>
 
-        <!-- Spotify Integration Section -->
+        <!-- Spotify Hub Section -->
         <div id="music-player-section" class="hidden bg-gray-900 border border-gray-700 rounded-xl p-4 space-y-4 shadow-xl">
             <div class="flex justify-between items-center border-b border-gray-800 pb-2">
                 <h2 class="text-lg font-bold text-green-400">Spotify Hub</h2>
                 <button onclick="toggleMusicPlayer()" class="text-gray-400 hover:text-white text-sm">✕ Close</button>
             </div>
 
-            <!-- Direct Launch Button for Full Spotify Web App (Matches your 1st Screenshot experience) -->
+            <!-- Direct Launch Button for Full Spotify App -->
             <div class="bg-gray-950 p-4 rounded-xl border border-gray-800 text-center space-y-3">
-                <p class="text-xs text-gray-300">Open your full Spotify account dashboard, search feeds, and libraries instantly:</p>
-                <a href="https://open.spotify.com" target="_blank" class="inline-block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 px-4 rounded-lg text-sm transition shadow-lg">
-                    🟢 Open Full Spotify Web App
+                <p class="text-xs text-gray-300">Tap below to open your full Spotify account, browse libraries, search songs, and play anything:</p>
+                <a href="https://open.spotify.com" target="_blank" class="inline-block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg text-sm transition shadow-lg">
+                    🟢 Open Full Spotify Account & Search
                 </a>
-            </div>
-
-            <!-- Compact Embedded Player for Quick Tracks -->
-            <div class="space-y-2">
-                <p class="text-[11px] text-gray-400 font-medium">Quick Workout Player Widget:</p>
-                <div class="w-full rounded-xl overflow-hidden bg-gray-950 border border-gray-800">
-                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX76Wlfdnj7AP?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-                </div>
             </div>
         </div>
 
@@ -247,4 +239,3 @@
     </script>
 </body>
 </html>
-

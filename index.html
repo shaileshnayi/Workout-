@@ -3,198 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workout & Muscle Volume Tracker with Spotify</title>
+    <title>Pro Workout Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PWA Manifest Link -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111827">
 </head>
-<body class="bg-gray-900 text-white min-h-screen p-4">
+<body class="bg-gray-900 text-white min-h-screen p-4 pb-28">
     <div class="max-w-md mx-auto bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl p-6 space-y-6">
         
-        <!-- Header with Menu Icons -->
+        <!-- Header -->
         <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-center text-indigo-400">Workout Tracker</h1>
+            <h1 class="text-2xl font-bold text-center text-indigo-400">Tracker Pro</h1>
             <div class="flex space-x-2">
-                <!-- Direct Spotify Web Player Link Button -->
-                <a href="https://open.spotify.com" target="_blank" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-green-400 flex items-center space-x-1 text-sm transition" title="Open Spotify Web Player">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                    </svg>
-                </a>
-                <!-- Workout Plan Toggle Button -->
-                <button onclick="toggleWorkoutPlan()" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-indigo-300 flex items-center space-x-1 text-sm transition" title="View Workout Plan">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                    <span class="font-medium">Plan</span>
+                <!-- Rest Timer Display -->
+                <button id="timer-display" onclick="startTimer(90)" class="bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded-lg text-white font-mono text-sm transition shadow-lg flex items-center space-x-1" title="Click to restart timer">
+                    <span>⏱️ Timer</span>
+                </button>
+                <button onclick="toggleWorkoutPlan()" class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg text-indigo-300 flex items-center space-x-1 text-sm transition">
+                    <span>📋 Plan</span>
                 </button>
             </div>
         </div>
 
-        <!-- Workout Plan Modal/Section -->
+        <!-- Workout Plan Modal (Hidden by default) -->
         <div id="workout-plan-section" class="hidden bg-gray-700/80 border border-gray-600 rounded-lg p-4 space-y-4">
             <div class="flex justify-between items-center border-b border-gray-600 pb-2">
-                <h2 class="text-lg font-semibold text-indigo-300">Sci-Based Muscle Building Plan</h2>
+                <h2 class="text-lg font-semibold text-indigo-300">Quick Select</h2>
                 <button onclick="toggleWorkoutPlan()" class="text-gray-400 hover:text-white text-sm">✕ Close</button>
             </div>
             
-            <div class="space-y-3 text-sm max-h-96 overflow-y-auto pr-1">
-                <!-- Arms / Biceps -->
-                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-indigo-500">
-                    <div class="font-bold text-indigo-200">Biceps & Arms</div>
-                    <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-1.5">
-                        <span class="text-gray-300">Exercises:</span>
-                        <button type="button" onclick="selectExercise('Arms', 'Preacher Curls')" class="bg-gray-700 hover:bg-indigo-600 text-indigo-200 px-1.5 py-0.5 rounded transition">Preacher Curls</button>,
-                        <button type="button" onclick="selectExercise('Arms', 'Incline DB Curls')" class="bg-gray-700 hover:bg-indigo-600 text-indigo-200 px-1.5 py-0.5 rounded transition">Incline DB Curls</button>,
-                        <button type="button" onclick="selectExercise('Arms', 'Standing DB Curls')" class="bg-gray-700 hover:bg-indigo-600 text-indigo-200 px-1.5 py-0.5 rounded transition">Standing DB Curls</button>,
-                        <button type="button" onclick="selectExercise('Arms', 'EZ-Bar Curls')" class="bg-gray-700 hover:bg-indigo-600 text-indigo-200 px-1.5 py-0.5 rounded transition">EZ-Bar Curls</button>,
-                        <button type="button" onclick="selectExercise('Arms', 'Cable Curls')" class="bg-gray-700 hover:bg-indigo-600 text-indigo-200 px-1.5 py-0.5 rounded transition">Cable Curls</button>
+            <div class="space-y-3 text-sm max-h-60 overflow-y-auto pr-1">
+                <!-- Chest -->
+                <div class="bg-gray-800 p-2 rounded-md border-l-4 border-blue-500">
+                    <div class="font-bold text-blue-200 mb-1">Chest</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button type="button" onclick="selectExercise('Chest', 'Bench Press')" class="bg-gray-700 hover:bg-blue-600 px-1.5 py-0.5 rounded">Bench Press</button>
+                        <button type="button" onclick="selectExercise('Chest', 'Incline DB Press')" class="bg-gray-700 hover:bg-blue-600 px-1.5 py-0.5 rounded">Incline DB Press</button>
+                        <button type="button" onclick="selectExercise('Chest', 'Cable Flyes')" class="bg-gray-700 hover:bg-blue-600 px-1.5 py-0.5 rounded">Cable Flyes</button>
                     </div>
-                    <div class="text-xs text-gray-300 mt-2">📌 3 Sets | 8–12 Reps | 1-2 RIR</div>
                 </div>
-
-                <!-- Chest & Presses -->
-                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-blue-500">
-                    <div class="font-bold text-blue-200">Chest & Presses</div>
-                    <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-1.5">
-                        <span class="text-gray-300">Exercises:</span>
-                        <button type="button" onclick="selectExercise('Chest', 'Incline DB Press')" class="bg-gray-700 hover:bg-blue-600 text-blue-200 px-1.5 py-0.5 rounded transition">Incline DB Press</button>,
-                        <button type="button" onclick="selectExercise('Chest', 'Smith Machine Bench Press')" class="bg-gray-700 hover:bg-blue-600 text-blue-200 px-1.5 py-0.5 rounded transition">Smith Machine Bench Press</button>,
-                        <button type="button" onclick="selectExercise('Chest', 'Chest Fly Machine')" class="bg-gray-700 hover:bg-blue-600 text-blue-200 px-1.5 py-0.5 rounded transition">Chest Fly Machine</button>,
-                        <button type="button" onclick="selectExercise('Back', 'Chest-Supported Rows')" class="bg-gray-700 hover:bg-blue-600 text-blue-200 px-1.5 py-0.5 rounded transition">Chest-Supported Rows</button>
+                <!-- Back -->
+                <div class="bg-gray-800 p-2 rounded-md border-l-4 border-emerald-500">
+                    <div class="font-bold text-emerald-200 mb-1">Back</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button type="button" onclick="selectExercise('Back', 'Lat Pulldowns')" class="bg-gray-700 hover:bg-emerald-600 px-1.5 py-0.5 rounded">Lat Pulldowns</button>
+                        <button type="button" onclick="selectExercise('Back', 'Barbell Rows')" class="bg-gray-700 hover:bg-emerald-600 px-1.5 py-0.5 rounded">Barbell Rows</button>
+                        <button type="button" onclick="selectExercise('Back', 'Pull-ups')" class="bg-gray-700 hover:bg-emerald-600 px-1.5 py-0.5 rounded">Pull-ups</button>
                     </div>
-                    <div class="text-xs text-gray-300 mt-2">📌 3-4 Sets | Presses: 6-10 Reps | Flyes: 10-15 Reps</div>
                 </div>
-
-                <!-- Back & Lats -->
-                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-emerald-500">
-                    <div class="font-bold text-emerald-200">Back & Lats</div>
-                    <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-1.5">
-                        <span class="text-gray-300">Exercises:</span>
-                        <button type="button" onclick="selectExercise('Back', 'Lat Pulldowns')" class="bg-gray-700 hover:bg-emerald-600 text-emerald-200 px-1.5 py-0.5 rounded transition">Lat Pulldowns</button>,
-                        <button type="button" onclick="selectExercise('Back', 'Seated Row Machine')" class="bg-gray-700 hover:bg-emerald-600 text-emerald-200 px-1.5 py-0.5 rounded transition">Seated Row Machine</button>,
-                        <button type="button" onclick="selectExercise('Back', 'Pull-ups')" class="bg-gray-700 hover:bg-emerald-600 text-emerald-200 px-1.5 py-0.5 rounded transition">Pull-ups</button>
+                <!-- Legs -->
+                <div class="bg-gray-800 p-2 rounded-md border-l-4 border-red-500">
+                    <div class="font-bold text-red-200 mb-1">Legs</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button type="button" onclick="selectExercise('Legs', 'Squats')" class="bg-gray-700 hover:bg-red-600 px-1.5 py-0.5 rounded">Squats</button>
+                        <button type="button" onclick="selectExercise('Legs', 'Leg Press')" class="bg-gray-700 hover:bg-red-600 px-1.5 py-0.5 rounded">Leg Press</button>
+                        <button type="button" onclick="selectExercise('Legs', 'RDLs')" class="bg-gray-700 hover:bg-red-600 px-1.5 py-0.5 rounded">RDLs</button>
                     </div>
-                    <div class="text-xs text-gray-300 mt-2">📌 3-4 Sets | 8–12 Reps | Full stretch & strong contraction</div>
                 </div>
-
-                <!-- Triceps -->
-                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-purple-500">
-                    <div class="font-bold text-purple-200">Triceps</div>
-                    <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-1.5">
-                        <span class="text-gray-300">Exercises:</span>
-                        <button type="button" onclick="selectExercise('Arms', 'Overhead Cable Extensions')" class="bg-gray-700 hover:bg-purple-600 text-purple-200 px-1.5 py-0.5 rounded transition">Overhead Cable Extensions</button>,
-                        <button type="button" onclick="selectExercise('Arms', 'Cable Pushdowns')" class="bg-gray-700 hover:bg-purple-600 text-purple-200 px-1.5 py-0.5 rounded transition">Cable Pushdowns</button>,
-                        <button type="button" onclick="selectExercise('Arms', 'Skull Crushers')" class="bg-gray-700 hover:bg-purple-600 text-purple-200 px-1.5 py-0.5 rounded transition">Skull Crushers</button>
+                <!-- Arms/Shoulders -->
+                <div class="bg-gray-800 p-2 rounded-md border-l-4 border-purple-500">
+                    <div class="font-bold text-purple-200 mb-1">Arms & Shoulders</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button type="button" onclick="selectExercise('Arms', 'Bicep Curls')" class="bg-gray-700 hover:bg-purple-600 px-1.5 py-0.5 rounded">Bicep Curls</button>
+                        <button type="button" onclick="selectExercise('Arms', 'Tricep Extensions')" class="bg-gray-700 hover:bg-purple-600 px-1.5 py-0.5 rounded">Tricep Ext</button>
+                        <button type="button" onclick="selectExercise('Shoulders', 'Lateral Raises')" class="bg-gray-700 hover:bg-purple-600 px-1.5 py-0.5 rounded">Lateral Raises</button>
                     </div>
-                    <div class="text-xs text-gray-300 mt-2">📌 3 Sets | 10–15 Reps | Target lengthened position</div>
-                </div>
-
-                <!-- Shoulders -->
-                <div class="bg-gray-800 p-3 rounded-md border-l-4 border-yellow-500">
-                    <div class="font-bold text-yellow-200">Shoulders (Delts)</div>
-                    <div class="text-xs text-gray-400 mt-1 flex flex-wrap gap-1.5">
-                        <span class="text-gray-300">Exercises:</span>
-                        <button type="button" onclick="selectExercise('Shoulders', 'Cable Lateral Raises')" class="bg-gray-700 hover:bg-yellow-600 text-yellow-200 px-1.5 py-0.5 rounded transition">Cable Lateral Raises</button>,
-                        <button type="button" onclick="selectExercise('Shoulders', 'Incline Smith Press')" class="bg-gray-700 hover:bg-yellow-600 text-yellow-200 px-1.5 py-0.5 rounded transition">Incline Smith Press</button>,
-                        <button type="button" onclick="selectExercise('Shoulders', 'Rear Delt Cable Flyes')" class="bg-gray-700 hover:bg-yellow-600 text-yellow-200 px-1.5 py-0.5 rounded transition">Rear Delt Cable Flyes</button>
-                    </div>
-                    <div class="text-xs text-gray-300 mt-2">📌 3-4 Sets | 10–20 Reps | Strict form, constant tension</div>
                 </div>
             </div>
         </div>
 
         <!-- Input Form -->
-        <form id="workout-form" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium">Workout Date</label>
-                <input type="date" id="workout-date" required class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium">Muscle Group</label>
-                <select id="muscle-group" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2">
-                    <option value="Chest">Chest</option>
-                    <option value="Back">Back</option>
-                    <option value="Legs">Legs</option>
-                    <option value="Shoulders">Shoulders</option>
-                    <option value="Arms">Arms</option>
-                    <option value="Core">Core</option>
-                </select>
-            </div>
-
-            <div>
-                <div class="flex justify-between items-center">
-                    <label class="block text-sm font-medium">Exercise Name</label>
-                    <button type="button" onclick="clearExerciseInput()" class="text-xs text-gray-400 hover:text-red-400 transition">Clear Input</button>
-                </div>
-                <input type="text" id="exercise-name" placeholder="e.g., Preacher Curls" required class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2">
-            </div>
-
-            <div class="grid grid-cols-3 gap-2">
+        <form id="workout-form" class="space-y-4 bg-gray-750 p-4 rounded-lg border border-gray-700 shadow-inner">
+            <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-medium">Weight</label>
-                    <input type="number" id="weight" placeholder="kg/lbs" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2">
+                    <label class="block text-sm font-medium text-gray-300">Date</label>
+                    <input type="date" id="workout-date" required class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium">Sets</label>
-                    <input type="number" id="sets" value="3" min="1" required class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium">Reps</label>
-                    <input type="number" id="reps" value="10" min="1" required class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2">
+                    <label class="block text-sm font-medium text-gray-300">Muscle</label>
+                    <select id="muscle-group" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2">
+                        <option value="Chest">Chest</option>
+                        <option value="Back">Back</option>
+                        <option value="Legs">Legs</option>
+                        <option value="Shoulders">Shoulders</option>
+                        <option value="Arms">Arms</option>
+                        <option value="Core">Core</option>
+                    </select>
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md transition">
-                Log Set
+            <div>
+                <div class="flex justify-between items-end">
+                    <label class="block text-sm font-medium text-gray-300">Exercise Name</label>
+                    <div id="previous-set-info" class="text-xs font-semibold text-green-400 h-4"></div>
+                </div>
+                <input type="text" id="exercise-name" placeholder="e.g., Preacher Curls" required class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2" oninput="updatePreviousSetInfo()">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300">Weight (kg/lbs)</label>
+                    <input type="number" id="weight" step="0.5" placeholder="0" class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2 text-lg font-bold">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-300">Reps</label>
+                    <input type="number" id="reps" value="10" min="1" required class="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-white p-2 text-lg font-bold">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-md transition text-lg flex justify-center items-center space-x-2">
+                <span>Log Set & Start Timer</span>
             </button>
         </form>
 
         <!-- Workout History Section -->
         <div>
-            <div class="flex justify-between items-center mb-2">
-                <h2 class="text-xl font-semibold">Workout History</h2>
-                <button onclick="clearHistory()" class="text-xs text-red-400 hover:text-red-300">Clear History</button>
+            <div class="flex justify-between items-center mb-4 border-b border-gray-700 pb-2">
+                <h2 class="text-xl font-semibold">Workout Log</h2>
+                <div class="flex space-x-3 text-xs">
+                    <button onclick="exportData()" class="text-blue-400 hover:text-blue-300">Export</button>
+                    <label class="cursor-pointer text-green-400 hover:text-green-300">
+                        Import
+                        <input type="file" class="hidden" accept=".json" onchange="importData(event)">
+                    </label>
+                    <button onclick="clearHistory()" class="text-red-400 hover:text-red-300">Clear All</button>
+                </div>
             </div>
-            <div id="history-container" class="space-y-4"></div>
+            <div id="history-container" class="space-y-6"></div>
         </div>
     </div>
 
-    <script>
-        document.getElementById('workout-date').valueAsDate = new Date();
+    <!-- Spotify Embed Fixed to Bottom -->
+    <div class="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-800 p-1 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.3)] z-50">
+        <!-- Change the playlist ID in the src to your preferred gym playlist -->
+        <iframe style="border-radius:8px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX76Wlfdnj7AP?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
 
+    <script>
+        // --- Initialization ---
+        document.getElementById('workout-date').valueAsDate = new Date();
         let workouts = JSON.parse(localStorage.getItem('workouts')) || [];
         const form = document.getElementById('workout-form');
         const historyContainer = document.getElementById('history-container');
 
+        // --- UI Toggles ---
         function toggleWorkoutPlan() {
             document.getElementById('workout-plan-section').classList.toggle('hidden');
         }
 
-        // --- Exercise selection helper from Plan ---
         function selectExercise(muscleGroup, exerciseName) {
             document.getElementById('muscle-group').value = muscleGroup;
             document.getElementById('exercise-name').value = exerciseName;
-            document.getElementById('workout-form').scrollIntoView({ behavior: 'smooth' });
+            updatePreviousSetInfo();
+            document.getElementById('weight').focus();
         }
 
-        // --- Clear Exercise Input Helper ---
-        function clearExerciseInput() {
-            document.getElementById('exercise-name').value = '';
+        // --- Progressive Overload Memory ---
+        function updatePreviousSetInfo() {
+            const exName = document.getElementById('exercise-name').value.trim().toLowerCase();
+            const infoDiv = document.getElementById('previous-set-info');
+            
+            if (!exName) {
+                infoDiv.innerHTML = '';
+                return;
+            }
+
+            // Find the most recent workout entry matching this exercise name
+            const pastMatches = workouts.filter(w => w.exercise.toLowerCase() === exName);
+            if (pastMatches.length > 0) {
+                const last = pastMatches[pastMatches.length - 1];
+                infoDiv.innerHTML = `Last: ${last.weight ? last.weight + 'kg' : 'Bodyweight'} x ${last.reps} reps`;
+            } else {
+                infoDiv.innerHTML = `<span class="text-gray-400">First time logging this</span>`;
+            }
         }
 
-        // --- Tracker History Logic ---
+        // --- Rest Timer Logic ---
+        let timerInterval;
+        let timeLeft = 0;
+        const timerDisplay = document.getElementById('timer-display');
+
+        function startTimer(seconds) {
+            clearInterval(timerInterval);
+            timeLeft = seconds;
+            updateTimerUI();
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    playBeep();
+                    timerDisplay.innerHTML = `<span>🚨 GO!</span>`;
+                    timerDisplay.classList.add('animate-pulse', 'bg-red-600');
+                    timerDisplay.classList.remove('bg-indigo-600');
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            if (timeLeft < 0) return;
+            timerDisplay.classList.remove('animate-pulse', 'bg-red-600');
+            timerDisplay.classList.add('bg-indigo-600');
+            const m = Math.floor(timeLeft / 60);
+            const s = (timeLeft % 60).toString().padStart(2, '0');
+            timerDisplay.innerHTML = `<span>⏱️ ${m}:${s}</span>`;
+        }
+
+        function playBeep() {
+            // Uses Web Audio API to create a beep without needing external sound files
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gainNode = ctx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(ctx.destination);
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, ctx.currentTime);
+            gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+            
+            osc.start();
+            osc.stop(ctx.currentTime + 0.5);
+        }
+
+        // --- Data Management & Rendering ---
         function saveAndRender() {
             localStorage.setItem('workouts', JSON.stringify(workouts));
             renderApp();
+            updatePreviousSetInfo(); // Refresh the memory badge if applicable
         }
 
         function renderApp() {
             historyContainer.innerHTML = '';
             if (workouts.length === 0) {
-                historyContainer.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">No workout history yet.</p>';
+                historyContainer.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">No workout history yet. Log your first set!</p>';
                 return;
             }
 
+            // Group by Date
             let groupedByDate = {};
             workouts.forEach((item, index) => {
                 if (!groupedByDate[item.date]) groupedByDate[item.date] = [];
@@ -202,57 +251,69 @@
             });
 
             const sortedDates = Object.keys(groupedByDate).sort().reverse();
+            
             sortedDates.forEach(date => {
-                const dateGroupCard = document.createElement('div');
-                dateGroupCard.className = "bg-gray-700 p-4 rounded-lg space-y-3";
+                const dateCard = document.createElement('div');
+                dateCard.className = "bg-gray-800 rounded-lg p-4 shadow";
 
-                let exercisesHTML = '';
-                let totalSets = 0;
+                // Header for the Date
+                dateCard.innerHTML = `<h3 class="font-bold text-indigo-400 border-b border-gray-700 pb-2 mb-3">${date}</h3>`;
 
+                // Group by Exercise within the Date
+                let exercisesGroup = {};
                 groupedByDate[date].forEach(item => {
-                    totalSets += parseInt(item.sets) || 0;
-                    exercisesHTML += `
-                        <div class="bg-gray-800 p-2.5 rounded flex justify-between items-center text-sm">
-                            <div>
-                                <span class="font-bold text-indigo-300">${item.muscle}</span>: ${item.exercise}
-                                <div class="text-xs text-gray-400">${item.weight ? item.weight + 'kg/lbs • ' : ''}Sets: ${item.sets} | Reps: ${item.reps}</div>
-                            </div>
-                            <button onclick="deleteWorkout(${item.globalIndex})" class="text-red-400 hover:text-red-300 text-xs">Delete</button>
-                        </div>
-                    `;
+                    if (!exercisesGroup[item.exercise]) exercisesGroup[item.exercise] = [];
+                    exercisesGroup[item.exercise].push(item);
                 });
 
-                dateGroupCard.innerHTML = `
-                    <div class="flex justify-between items-center border-b border-gray-600 pb-2">
-                        <span class="font-bold text-indigo-400">${date}</span>
-                        <span class="text-xs bg-gray-800 px-2 py-1 rounded text-gray-300">Total Sets: ${totalSets}</span>
-                    </div>
-                    <div class="space-y-2">
-                        ${exercisesHTML}
-                    </div>
-                `;
-                historyContainer.appendChild(dateGroupCard);
+                // Render Sets grouped by Exercise
+                let exercisesHTML = `<div class="space-y-4">`;
+                for (const [exName, sets] of Object.entries(exercisesGroup)) {
+                    let setsHTML = '';
+                    sets.forEach((set, idx) => {
+                        setsHTML += `
+                            <div class="flex justify-between items-center text-sm bg-gray-700/50 p-2 rounded mt-1">
+                                <span class="text-gray-200">Set ${idx + 1}: <span class="font-bold">${set.weight ? set.weight + 'kg x ' : ''}${set.reps} reps</span></span>
+                                <button onclick="deleteWorkout(${set.globalIndex})" class="text-red-400 hover:text-red-300 text-xs px-2 py-1">Drop</button>
+                            </div>
+                        `;
+                    });
+
+                    exercisesHTML += `
+                        <div>
+                            <div class="text-sm font-bold text-gray-300 flex justify-between">
+                                <span>${exName}</span>
+                                <span class="text-xs font-normal text-gray-500">${sets[0].muscle}</span>
+                            </div>
+                            ${setsHTML}
+                        </div>
+                    `;
+                }
+                exercisesHTML += `</div>`;
+                dateCard.innerHTML += exercisesHTML;
+                historyContainer.appendChild(dateCard);
             });
         }
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
+            
             const newWorkout = {
                 date: document.getElementById('workout-date').value,
                 muscle: document.getElementById('muscle-group').value,
-                exercise: document.getElementById('exercise-name').value,
+                exercise: document.getElementById('exercise-name').value.trim(),
                 weight: document.getElementById('weight').value,
-                sets: document.getElementById('sets').value,
                 reps: document.getElementById('reps').value
             };
+            
             workouts.push(newWorkout);
             saveAndRender();
             
-            const currentDate = document.getElementById('workout-date').value;
-            form.reset();
-            document.getElementById('workout-date').value = currentDate;
-            document.getElementById('sets').value = '3';
-            document.getElementById('reps').value = '10';
+            // Keep date, muscle, and exercise filled to allow rapid logging of next set
+            document.getElementById('reps').focus(); // Move cursor back to reps for quick editing
+            
+            // Start 90 second rest timer automatically
+            startTimer(90); 
         });
 
         function deleteWorkout(index) {
@@ -261,14 +322,58 @@
         }
 
         function clearHistory() {
-            if(confirm('Are you sure you want to clear all workout history?')) {
+            if(confirm('Are you sure you want to delete ALL workout data? This cannot be undone.')) {
                 workouts = [];
                 saveAndRender();
             }
         }
 
+        // --- Data Export/Import ---
+        function exportData() {
+            const dataStr = JSON.stringify(workouts);
+            const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+            const link = document.createElement('a');
+            link.setAttribute('href', dataUri);
+            link.setAttribute('download', `workout-backup-${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedWorkouts = JSON.parse(e.target.result);
+                    if (Array.isArray(importedWorkouts)) {
+                        workouts = importedWorkouts;
+                        saveAndRender();
+                        alert('Workout data imported successfully!');
+                    } else {
+                        alert('Invalid data format.');
+                    }
+                } catch (err) {
+                    alert('Error reading file. Make sure it is a valid JSON backup.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input
+        }
+
+        // --- PWA Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+
+        // Initial render
         renderApp();
     </script>
 </body>
 </html>
-
